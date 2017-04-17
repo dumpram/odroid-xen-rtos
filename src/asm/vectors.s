@@ -25,11 +25,11 @@
 exception_vector_table:
     b		unused
     b		undef
-    b		svc
+    b		FreeRTOS_SWI_Handler
     b		pabt
     b		dabt
     b		unused2
-    b		irq_handler
+    b		FreeRTOS_IRQ_Handler
     b		firq_handler
 
 unused:

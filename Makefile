@@ -7,11 +7,12 @@
 # Toolchain
 TOOLCHAIN_ROOT = /home/dumpram/arm-compilers/gcc-arm-none-eabi-5_4-2016q3
 
-PREFIX = ~/arm-compilers/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
+#PREFIX = ~/arm-compilers/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
+PREFIX = arm-linux-gnueabihf-
 
 CC = $(PREFIX)gcc
 AS = $(PREFIX)gcc
-LD = $(PREFIX)ld
+LD = $(PREFIX)gcc
 AR = $(PREFIX)ar
 BIN = $(PREFIX)objcopy
 
@@ -57,39 +58,50 @@ BINFLAGS = -O binary
 
 # User Objects
 USER_OBJ := $(patsubst %.c, %.o, $(USER_SRC))
+USER_AOBJ := $(patsubst %.s, %.o, $(USER_ASRC))
 
+# Includes
+CFLAGS += -I$(RTOS_INC) -I . -I $(FREERTOS_PORT) -I inc $(PLATFORM_INC)
 
-# Compiler flags
-CFLAGS := -I$(RTOS_INC) -I . -I $(FREERTOS_PORT) -I inc $(PLATFORM_INC) \
-	-mcpu=cortex-a7 \
-	-mfpu=vfpv4 \
-	-mthumb-interwork \
-	-mfloat-abi=softfp
+# Machine flags
+CFLAGS +=-Wall \
+		-mcpu=cortex-a7 \
+        -mfpu=vfpv4 \
+        -fomit-frame-pointer \
+		-fno-strict-aliasing \
+		-nostdlib
+
+AFLAGS += -x assembler-with-cpp
 
 # Linker flags
-LDFLAGS := 
+LDFLAGS :=-static -nostartfiles -Xlinker -build-id=none -T$(LINKER_SCRIPT)
 
-all : app.bin dirs
+all : app.bin
 
-%.o: %.c
+%.o: %.c Makefile
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo "Compiled "$<" successfully!"
 
-%.o: %.S
-	@$(AS) $(CFLAGS) -c $< -o $@
+%.o: %.s Makefile
+	@$(AS) $(CFLAGS) $(AFLAGS) -c $< -o $@
 	@echo "Compiled "$<" successfully!"
 
-obj/app.elf : dirs $(RTOS_OBJ) $(RTOS_AOBJ) $(USER_OBJ)
-	@$(LD) $(LDFLAGS) -o $@ $(USER_OBJ) $(RTOS_OBJ) $(RTOS_AOBJ) \
-		-L$(LIB_C) -L$(LIB_GCC) -lc -lgcc -T$(LINKER_SCRIPT)
+%.o: %.S Makefile
+	@$(AS) $(CFLAGS) $(AFLAGS) -c $< -o $@
+	@echo "Compiled "$<" successfully!"
+
+obj/app.elf : $(RTOS_OBJ) $(RTOS_AOBJ) $(USER_AOBJ) $(USER_OBJ) 
+	@rm -rf obj/app.elf
+	@$(LD) $(LDFLAGS) -o $@ $(USER_AOBJ) $(USER_OBJ) $(RTOS_OBJ) $(RTOS_AOBJ)
 	@echo "Linked app successfully!"
 
-app.bin : obj/app.elf
-	@$(BIN) $(BINFLAGS) obj/app.elf app.bin
+%.bin : obj/%.elf
+	@rm -rf app.bin
+	@$(BIN) $< $(BINFLAGS) $@
 	@echo "Generated binary successfully!"
 
 clean :
-	rm -f $(RTOS_OBJ) $(RTOS_AOBJ) $(USER_OBJ) \
+	rm -f $(RTOS_OBJ) $(RTOS_AOBJ) $(USER_OBJ) $(USER_AOBJ) \
 	obj/app.elf app.bin
 
 dirs :

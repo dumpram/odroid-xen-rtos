@@ -25,7 +25,7 @@ setup:
     mcr    p15, 0, r0, c12, c0, 0
 
 
-    cpsid  i            @ Disable interrupts
+    cpsie  i            @ Enable interrupts
 
     @ Greeting message from boot.s
     mov r0, #0
