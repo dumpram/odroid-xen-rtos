@@ -2,10 +2,9 @@ OUTPUT_ARCH(arm)
 ENTRY(_start)
 SECTIONS
 {
-  _start = 0x40008000;
 
-  . = _start;
-
+  _page_dir      = 0x404000;  /* 16 KB translation table */
+  .    = 0x408000;
   .text : {
     *(.start);
     *(.text);
@@ -30,11 +29,16 @@ SECTIONS
   abt_stack = _start_stacks + 65536;
   und_stack = _start_stacks + 81920;
 
-  . = und_stack;
+  . = und_stack;  
 
   . = ALIGN(4);
   _bss_start = .;
   .bss : { *(.bss); }
   . = ALIGN(4);
   _bss_end = .;
+
+  . = ALIGN(16K);
+  _l1_page_table = .;
+  _l1_page_table_end = _l1_page_table + 16 * 1024;
+  . = _l1_page_table_end;
 }

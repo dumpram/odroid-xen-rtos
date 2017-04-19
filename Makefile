@@ -6,17 +6,13 @@
 
 # Toolchain
 TOOLCHAIN_ROOT = /home/dumpram/arm-compilers/gcc-arm-none-eabi-5_4-2016q3
-
-#PREFIX = ~/arm-compilers/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
-PREFIX = arm-linux-gnueabihf-
+PREFIX = ~/arm-compilers/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
 
 CC = $(PREFIX)gcc
 AS = $(PREFIX)gcc
-LD = $(PREFIX)gcc
+LD = $(PREFIX)ld
 AR = $(PREFIX)ar
 BIN = $(PREFIX)objcopy
-
-APP_LOAD_ADDR = 0x80000000 # LOAD IN RAM
 
 LIB_C = $(TOOLCHAIN_ROOT)/arm-none-eabi/lib
 LIB_GCC = $(TOOLCHAIN_ROOT)/lib/gcc/arm-none-eabi/5.4.1
@@ -65,8 +61,11 @@ CFLAGS += -I$(RTOS_INC) -I . -I $(FREERTOS_PORT) -I inc $(PLATFORM_INC)
 
 # Machine flags
 CFLAGS +=-Wall \
+		-Werror \
 		-mcpu=cortex-a7 \
         -mfpu=vfpv4 \
+        -mthumb-interwork \
+        -mfloat-abi=softfp \
         -fomit-frame-pointer \
 		-fno-strict-aliasing \
 		-nostdlib
@@ -74,9 +73,9 @@ CFLAGS +=-Wall \
 AFLAGS += -x assembler-with-cpp
 
 # Linker flags
-LDFLAGS :=-static -nostartfiles -Xlinker -build-id=none -T$(LINKER_SCRIPT)
+LDFLAGS :=-static -nostartfiles -build-id=none 
 
-all : app.bin
+all : clean app.bin
 
 %.o: %.c Makefile
 	@$(CC) $(CFLAGS) -c $< -o $@
@@ -91,12 +90,14 @@ all : app.bin
 	@echo "Compiled "$<" successfully!"
 
 obj/app.elf : $(RTOS_OBJ) $(RTOS_AOBJ) $(USER_AOBJ) $(USER_OBJ) 
-	@rm -rf obj/app.elf
-	@$(LD) $(LDFLAGS) -o $@ $(USER_AOBJ) $(USER_OBJ) $(RTOS_OBJ) $(RTOS_AOBJ)
+	@$(LD) $(USER_AOBJ) $(USER_OBJ) $(RTOS_OBJ) $(RTOS_AOBJ) \
+	$(LDFLAGS) -o $@ \
+	-L$(LIB_GCC) -L$(LIB_C) \
+	-lgcc -lc  \
+	-T$(LINKER_SCRIPT)
 	@echo "Linked app successfully!"
 
 %.bin : obj/%.elf
-	@rm -rf app.bin
 	@$(BIN) $< $(BINFLAGS) $@
 	@echo "Generated binary successfully!"
 

@@ -13,20 +13,20 @@
 #define _TICK_H
 
 
-inline int gt_get_cntfrq();
-inline int gt_get_cntkctl();
+int gt_get_cntfrq();
+int gt_get_cntkctl();
 
-inline int gt_get_cntp_tval();
-inline int gt_get_cntp_ctl();
+int gt_get_cntp_tval();
+int gt_get_cntp_ctl();
 
-inline int gt_get_cntv_tval();
-inline int gt_get_cntv_ctl();
+int gt_get_cntv_tval();
+int gt_get_cntv_ctl();
 
-inline int gt_get_cntvct();
-inline int gt_get_cntp_cval();
-inline int gt_get_cntv_cval();
+int gt_get_cntvct();
+int gt_get_cntp_cval();
+int gt_get_cntv_cval();
 
-inline int gt_get_cntvoff();
+int gt_get_cntvoff();
 
 
 #endif
