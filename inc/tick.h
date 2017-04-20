@@ -39,8 +39,10 @@ void gt_set_cntv_ctl(unsigned int val);
 
 void gt_set_cntv_tval(unsigned int val);
 
-void gt_set_cntv_cval(unsigned long val);
+void gt_set_cntv_cval(long long val);
 
 void gt_set_cntp_tval(unsigned int val);
+
+void gt_set_cntvct(long long val);
 
 #endif

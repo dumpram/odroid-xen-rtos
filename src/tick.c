@@ -41,3 +41,9 @@ void gt_set_cntv_cval(long long value)
     __asm__ __volatile__("mcrr p15, 3, %0, %H0, c14"
         ::"r"(value));
 }
+
+void gt_set_cntvct(long long value)
+{
+    __asm__ __volatile__("mcrr p15, 1, %0, %H0, c14"
+    ::"r"(value));
+}

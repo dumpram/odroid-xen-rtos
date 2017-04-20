@@ -72,6 +72,38 @@ void test_gt_timer()
     print_simple("Test ended!\n");
 }
 
+void test_1second_timer()
+{
+    int ctl_val;
+    print_simple("Testing 1 second timer!\n");
+    //gt_set_cntvct(0);
+    print_simple("Setting cntvct to 0!\n");
+    gt_set_cntv_cval(-1);
+    gt_set_cntv_tval(24000000);
+    print_simple("Setting tval to 24000000!\n");
+    gt_set_cntv_ctl(1);
+    print_simple("Enabling timer!\n");
+
+    long long loop_cnt = 0;
+    int sec = 0;
+
+    while(1)
+    {
+        ctl_val = gt_get_cntv_ctl();
+
+        print_register("ctl_val", ctl_val);
+        while (!(ctl_val & 0x4)) {
+            ctl_val = gt_get_cntv_ctl();
+            loop_cnt++;
+        }
+        sec++;
+        print_register("Seconds", sec);
+        print_register("loop_cnt", loop_cnt);
+        loop_cnt = 0;
+        gt_set_cntv_tval(24000000);        
+    }
+}
+
 int main()
 {
     print_register("cntfrq", gt_get_cntfrq());
@@ -80,8 +112,11 @@ int main()
     print_register("cntp_ctl", gt_get_cntp_ctl());
     print_register("cntv_tval", gt_get_cntv_tval());
     print_register("cntv_ctl", gt_get_cntv_ctl());
+    print_register("cntvct", gt_get_cntvct());
+
 
     test_gt_timer();
+    test_1second_timer();
 
     while (1);
 }
