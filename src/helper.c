@@ -13,7 +13,7 @@
 
 static int number_to_buffer(char *p, unsigned int num);
 
-void dump_register(char *out, char *reg_name, unsigned int value)
+void dump_register(char *out, char *reg_name, unsigned value)
 {
     strcpy(out, reg_name);
     //__asm("mov r6, #100");
@@ -32,6 +32,15 @@ void dump_register(char *out, char *reg_name, unsigned int value)
     out = '\0';
 }
 
+static void shift_array(char *p, int len)
+{
+    int i;
+    for (i = len; i >= 1; i--)
+    {
+        p[i] = p[i - 1];       
+    }
+}
+
 /**
  * @param p pointer to string
  * 
@@ -44,11 +53,21 @@ static int number_to_buffer(char *p, unsigned int num)
     int len = 0;
     do
     {
-        *(p + 1) = *p;
-        *p++ = num % 10 + '0';
+        *p = num % 10 + '0';
         num /= 10;
         len++;
+        if (num > 0)
+        {
+            shift_array(p, len);
+        }
     } while (num > 0);
+
+    while (num > 0)
+    {
+
+    }
+
+
     p[len] = 0;
     return len;
 }
