@@ -17,7 +17,7 @@
  * Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-    .section ".start"
+    .section ".text"
     .globl exception_vector_table
 
 @ 5 low-order zero bits, i.e., 32-byte aligned

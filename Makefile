@@ -75,7 +75,7 @@ AFLAGS += -x assembler-with-cpp
 # Linker flags
 LDFLAGS :=-static -nostartfiles -build-id=none 
 
-all : clean app.bin
+all : app.bin
 
 %.o: %.c Makefile
 	@$(CC) $(CFLAGS) -c $< -o $@
@@ -90,7 +90,7 @@ all : clean app.bin
 	@echo "Compiled "$<" successfully!"
 
 obj/app.elf : $(RTOS_OBJ) $(RTOS_AOBJ) $(USER_AOBJ) $(USER_OBJ) 
-	@$(LD) $(USER_AOBJ) $(USER_OBJ) $(RTOS_OBJ) $(RTOS_AOBJ) \
+	$(LD) $(USER_AOBJ) $(RTOS_OBJ) $(RTOS_AOBJ) $(USER_OBJ) \
 	$(LDFLAGS) -o $@ \
 	-L$(LIB_GCC) -L$(LIB_C) \
 	-lgcc -lc  \
@@ -109,5 +109,5 @@ dirs :
 	@mkdir -p obj && echo "Created object directory..."
 
 export: app.bin
-	scp app.bin root@192.168.0.2:~
+	scp app.bin odroid:~
 	@echo "App exported successfully!"

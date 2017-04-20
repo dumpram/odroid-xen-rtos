@@ -18,7 +18,7 @@ void print_register(char *reg_name, unsigned int value)
 
 int main()
 {
-    print_register("cntfrq", gt_get_cntkctl());
+    print_register("cntfrq", gt_get_cntfrq());
     print_register("cntkctl", gt_get_cntkctl());
     print_register("cntp_tval", gt_get_cntp_tval());
     print_register("cntp_ctl", gt_get_cntp_ctl());
