@@ -1,7 +1,9 @@
 #include <hypercall.h>
 #include <string.h>
 
-#define INTERRUPT_MESSAGE "Message from IRQ handler"
+#define INTERRUPT_MESSAGE "Message from IRQ handler\n"
+
+extern int flag;
 
 void vSetupTickInterrupt()
 {
@@ -10,8 +12,14 @@ void vSetupTickInterrupt()
 
 void vApplicationFPUSafeIRQHandler()
 {
+    flag = 1;
     HYPERVISOR_console_io(HYPERCALL_WRITE, 
         strlen(INTERRUPT_MESSAGE), INTERRUPT_MESSAGE);
+}
+
+void handler()
+{
+    flag = 1;
 }
 
 

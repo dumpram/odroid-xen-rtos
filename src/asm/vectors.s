@@ -29,7 +29,7 @@ exception_vector_table:
     b		pabt
     b		dabt
     b		unused2
-    b		FreeRTOS_IRQ_Handler
+    b		handler
     b		firq_handler
 
 unused:

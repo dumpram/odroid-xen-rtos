@@ -75,8 +75,7 @@ AFLAGS += -x assembler-with-cpp
 # Linker flags
 LDFLAGS :=-static -nostartfiles -build-id=none 
 
-all : export
-
+all : app.bin
 %.o: %.c Makefile
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo "Compiled "$<" successfully!"

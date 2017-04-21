@@ -47,7 +47,7 @@ setup:
 
     @ Add 1MB entry for current section
     mov r0, pc, lsr#20          @ Discard lower bits 
-    mov r0, r0, lsl#20          @ They are irrelevant in 1 MB mappings?
+    mov r0, r0, lsl#20          @ They are irrelevant in 1 MB mappings
 
     orr r3, r0, r8              @ r3 = entry for this section
     ldr r4, =_start             @ r4 = virtual address of this section
@@ -70,6 +70,16 @@ setup:
 
 stage2:
 
+    @ Map whole 4 GB of memory space
+    mov r1, r7                  @ Start of L1 page table
+    add r3, r1, #16 * 1024      @ Fill 16 kB of L1 page table
+    orr r0, r8, r9              @ r8 = template, r9 = address of RAM
+1:
+    str r0, [r1],#4             @ Store at current position and increment
+    add r0, r0, #1<<20          @ Next 1 MB
+    cmp r3, r1                  @ Until everything is mapped
+    bne 1b
+
     zero_bss
     setup_stacks
 
@@ -83,7 +93,9 @@ stage2:
     mov r0, #0
     mov r1, #45
     ldr r2, =msg
-    bl HYPERVISOR_console_io    
+    bl HYPERVISOR_console_io
+
+    mov r0, r9                  @ Pass physical to virtual offset to main
 
 __main:
     ldr lr,=__exit      @ go to exit after main

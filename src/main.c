@@ -2,6 +2,8 @@
 #include <string.h>
 #include <hypercall.h>
 
+void gic_init(void);
+
 static char debug_buffer[100];
 
 void dump_register(char *out, char *reg_name, unsigned value);
@@ -104,7 +106,7 @@ void test_1second_timer()
     }
 }
 
-int main()
+void print_gt_registers()
 {
     print_register("cntfrq", gt_get_cntfrq());
     print_register("cntkctl", gt_get_cntkctl());
@@ -113,10 +115,45 @@ int main()
     print_register("cntv_tval", gt_get_cntv_tval());
     print_register("cntv_ctl", gt_get_cntv_ctl());
     print_register("cntvct", gt_get_cntvct());
+}
 
+void setup_timer_interrupt()
+{
+    gt_set_cntv_cval(-1); // 0xffffffffffffffff in cval register so it will 
+                          // never give interrupt
+    gt_set_cntv_tval(GT_RATE); // overflow after 1 second
 
-    test_gt_timer();
-    test_1second_timer();
+    print_simple("Initializing GIC!\n");
+    gic_init(); // initialise GIC and enable virtual interrupt 
+
+    print_simple("Enabling timer!\n");
+    gt_set_cntv_ctl(1); // enable timer
+
+}
+
+int flag = 0;
+
+int pv_offset;
+
+int main(int argc, char **args)
+{
+
+    pv_offset = argc;
+
+    print_register("pv_offset:", pv_offset);
+
+    print_gt_registers();
+    //test_gt_timer();
+    //test_1second_timer();
+
+    setup_timer_interrupt();
+
+    while (!flag);
+
+    if (flag)
+    {
+        print_simple("Congrats! Interrupt occured!\n");
+    }
 
     while (1);
 }

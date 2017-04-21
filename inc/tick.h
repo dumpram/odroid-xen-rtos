@@ -13,7 +13,7 @@
 #define _TICK_H
 
 // see issue #1
-#define GT_RATE 2400000
+#define GT_RATE 24000000
 
 
 
