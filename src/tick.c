@@ -1,25 +1,44 @@
 #include <hypercall.h>
 #include <string.h>
+#include <FreeRTOS.h>
+#include <task.h>
+#include <tick.h>
 
 #define INTERRUPT_MESSAGE "Message from IRQ handler\n"
 
-extern int flag;
+extern int main_flag;
+extern int ulPortYieldRequired;
+
+void setup_timer_interrupt();
+void reload_timer();
 
 void vSetupTickInterrupt()
 {
-	
+	setup_timer_interrupt();
 }
 
 void vApplicationFPUSafeIRQHandler()
 {
-    flag = 1;
-    HYPERVISOR_console_io(HYPERCALL_WRITE, 
-        strlen(INTERRUPT_MESSAGE), INTERRUPT_MESSAGE);
+    gt_set_cntv_ctl(2);
+
+    // main_flag = 1;
+    // HYPERVISOR_console_io(HYPERCALL_WRITE, 
+    //     strlen(INTERRUPT_MESSAGE), INTERRUPT_MESSAGE);
+
+    if (xTaskIncrementTick() != pdFALSE)
+    {
+        ulPortYieldRequired = pdTRUE;    
+    }
+
+    reload_timer();
+
+    gt_set_cntv_ctl(1);
+
 }
 
 void handler()
 {
-    flag = 1;
+    main_flag = 1;
 }
 
 

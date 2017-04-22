@@ -87,8 +87,11 @@
 
 void vSetupTickInterrupt();
 
+#include "gic.h"
+#include "mm.h"
+
 #define configUNIQUE_INTERRUPT_PRIORITIES 128
-#define configINTERRUPT_CONTROLLER_BASE_ADDRESS 0x48200000
+#define configINTERRUPT_CONTROLLER_BASE_ADDRESS ((unsigned int)to_virt(GUEST_GICD_BASE))
 #define configINTERRUPT_CONTROLLER_CPU_INTERFACE_OFFSET 0x1000
 #define configSETUP_TICK_INTERRUPT() vSetupTickInterrupt()
 

@@ -11,9 +11,8 @@
 #ifndef _MM_H
 #define _MM_H
 
-extern int pv_offset;
+extern unsigned int pv_offset;
 
-#define to_virt(adr)           ((void *)(adr) - pv_offset)
-
+#define to_virt(adr)          ((void *)adr - pv_offset)
 
 #endif 

@@ -29,9 +29,9 @@ struct gic {
     volatile char *gicc_base;
 };
 
-static struct gic gic;
+struct gic gic;
 
-extern int pv_offset;
+extern unsigned int pv_offset;
 
 #define to_virt(adr)           ((void *)((adr) - pv_offset)
 
@@ -48,9 +48,14 @@ extern int pv_offset;
 #define GICC_IAR          0xc
 #define GICC_EOIR         0x10
 #define GICC_HPPIR        0x18
+#define GICC_BPR          0x08
+#define GICC_RPR          0x14
 
 #define gicd(gic, offset) ((gic)->gicd_base + (offset))
 #define gicc(gic, offset) ((gic)->gicc_base + (offset))
+
+#define g_gicd(gic, offset) ((gic).gicd_base + (offset))
+#define g_gicc(gic, offset) ((gic).gicc_base + (offset))
 
 #define REG(addr) ((uint32_t *)(addr))
 
@@ -178,4 +183,19 @@ void gic_init()
         VIRTUALTIMER_IRQ /* interrupt number */, 
         0x1 /*cpu_set*/, 
         1 /*level_sensitive*/);
+}
+
+uint32_t gic_pmr()
+{
+    return REG_READ32(REG(g_gicc(gic, GICC_IAR)));
+}
+
+uint32_t gic_bpr()
+{
+    return REG_READ32(REG(g_gicc(gic, GICC_IAR)));
+}
+
+uint32_t gic_rpr()
+{
+    return REG_READ32(REG(g_gicc(gic, GICC_IAR)));
 }

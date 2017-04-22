@@ -87,6 +87,14 @@ stage2:
     ldr r0, =exception_vector_table
     mcr p15, 0, r0, c12, c0, 0
 
+    mrc p15, #0, r1, c1, c0, #2           @ r1 = Access Control Register
+    orr r1, r1, #(0xf << 20)              @ enable full access for p10,11
+    mcr p15, #0, r1, c1, c0, #2           @ Access Control Register = r1
+    mov r1, #0
+    mcr p15, #0, r1, c7, c5, #4           @ flush prefetch buffer
+    mov r0,#0x40000000
+    fmxr FPEXC, r0                        @ Set Neon/VFP Enable bit
+
     cpsie  i            @ Enable interrupts
 
     @ Greeting message from boot.s
@@ -98,7 +106,7 @@ stage2:
     mov r0, r9                  @ Pass physical to virtual offset to main
 
 __main:
-    ldr lr,=__exit      @ go to exit after main
+    ldr lr,=__exit              @ go to exit after main
     b main
 
 __exit:

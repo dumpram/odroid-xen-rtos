@@ -75,7 +75,7 @@ AFLAGS += -x assembler-with-cpp
 # Linker flags
 LDFLAGS :=-static -nostartfiles -build-id=none 
 
-all : app.bin
+all : export
 %.o: %.c Makefile
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo "Compiled "$<" successfully!"
@@ -89,7 +89,7 @@ all : app.bin
 	@echo "Compiled "$<" successfully!"
 
 obj/app.elf : $(RTOS_OBJ) $(RTOS_AOBJ) $(USER_AOBJ) $(USER_OBJ) 
-	$(LD) $(USER_AOBJ) $(RTOS_OBJ) $(RTOS_AOBJ) $(USER_OBJ) \
+	@$(LD) $(USER_AOBJ) $(RTOS_OBJ) $(RTOS_AOBJ) $(USER_OBJ) \
 	$(LDFLAGS) -o $@ \
 	-L$(LIB_GCC) -L$(LIB_C) \
 	-lgcc -lc  \

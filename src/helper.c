@@ -10,8 +10,14 @@
  *
  */
 #include <string.h>
+#include <hypercall.h>
 
 static int number_to_buffer(char *p, unsigned int num);
+
+void print_simple(char *buf)
+{
+    HYPERVISOR_console_io(HYPERCALL_WRITE, strlen(buf), buf);   
+}
 
 void dump_register(char *out, char *reg_name, unsigned value)
 {
