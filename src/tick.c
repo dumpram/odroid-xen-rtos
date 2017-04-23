@@ -27,7 +27,7 @@ void vApplicationFPUSafeIRQHandler()
 
     if (xTaskIncrementTick() != pdFALSE)
     {
-        ulPortYieldRequired = pdTRUE;    
+        ulPortYieldRequired = pdTRUE;
     }
 
     reload_timer();

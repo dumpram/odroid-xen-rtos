@@ -160,7 +160,7 @@ void setup_timer_interrupt()
 {
     gt_set_cntv_cval(-1); // 0xffffffffffffffff in cval register so it will 
                           // never give interrupt
-    gt_set_cntv_tval(GT_RATE); // overflow after 1 second
+    gt_set_cntv_tval(GT_RATE/1000); // overflow after 1 ms
 
     print_simple("Initializing GIC!\n");
 
@@ -171,7 +171,7 @@ void setup_timer_interrupt()
 
 void reload_timer()
 {
-    gt_set_cntv_tval(GT_RATE);
+    gt_set_cntv_tval(GT_RATE/1000);
 }
 
 void vTask1()
@@ -179,7 +179,7 @@ void vTask1()
     while(1)
     {
         print_simple("Task1\n");
-        vTaskDelay(3);
+        vTaskDelay(1000);
     }
 }
 
@@ -188,7 +188,7 @@ void vTask2()
     while(1)
     {
         print_simple("Task2\n");
-        vTaskDelay(2);
+        vTaskDelay(2000);
     }
 }
 

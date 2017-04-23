@@ -73,10 +73,6 @@
 /* Scheduler includes. */
 #include "FreeRTOS.h"
 #include "task.h"
-#include <helper.h>
-
-/* GIC */
-#include <gic.h>
 
 #ifndef configINTERRUPT_CONTROLLER_BASE_ADDRESS
 	#error configINTERRUPT_CONTROLLER_BASE_ADDRESS must be defined.  See http://www.freertos.org/Using-FreeRTOS-on-Cortex-A-Embedded-Processors.html
@@ -405,14 +401,11 @@ uint32_t ulAPSR;
 	}
 	#endif /* conifgASSERT_DEFINED */
 
-    print_simple("Checking APSR!\n");
 	/* Only continue if the CPU is not in User mode.  The CPU must be in a
 	Privileged mode for the scheduler to start. */
 	__asm volatile ( "MRS %0, APSR" : "=r" ( ulAPSR ) );
 	ulAPSR &= portAPSR_MODE_BITS_MASK;
 	configASSERT( ulAPSR != portAPSR_USER_MODE );
-
-    print_simple("APSR checked!\n");
 
 	//if( ulAPSR != portAPSR_USER_MODE )
 	//{
@@ -423,7 +416,6 @@ uint32_t ulAPSR;
 
 		//if( (gic_bpr() & portBINARY_POINT_BITS ) <= portMAX_BINARY_POINT_VALUE )
 		{
-            print_simple("Restoring context\n");
 			/* Interrupts are turned off in the CPU itself to ensure tick does
 			not execute	while the scheduler is being started.  Interrupts are
 			automatically turned back on in the CPU when the first task starts
