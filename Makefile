@@ -30,10 +30,13 @@ obj/app.elf : submodules
 	@$(BIN) $< $(BINFLAGS) $@
 	@echo "Generated binary successfully!"
 
-submodules:
+submodules: dirs
 	$(foreach submodule,$(SUBMODULES),$(MAKE) -C $(submodule) && ) true
 	+$(MAKE) -C apps
 
+dirs:
+	mkdir -p obj
+	
 clean:
 	+$(MAKE) -C api clean
 	+$(MAKE) -C arch clean
