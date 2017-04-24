@@ -39,4 +39,38 @@ In this project, goal is to implement and test:
 2) Drivers for exynos5422 gpio, spi and i2s peripherals
 3) Test real-time performances using Linux and FreeRTOS in combination
 
-
+## Project structure
+```
+├── api
+│   ├── interrupt.c
+│   ├── Makefile
+│   ├── memory.c
+│   └── time.c
+├── apps
+│   ├── FreeRTOSConfig.h
+│   ├── Makefile
+│   └── simple_app
+├── arch
+│   ├── arm
+│   ├── Makefile
+│   └── xen
+├── drivers
+│   ├── clocksource
+│   ├── console
+│   ├── irqchip
+│   └── Makefile
+├── include
+│   ├── api
+│   ├── arch
+│   ├── drivers
+│   └── lib
+├── lib
+│   ├── FreeRTOS
+│   ├── Makefile
+│   └── utils
+├── config.mk
+├── LICENSE
+├── Makefile
+└── README.md
+```
+Settings for project such as compiler, linker, assembler and includes should be changed in config.mk.
