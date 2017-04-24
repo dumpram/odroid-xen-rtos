@@ -1,8 +1,7 @@
 /**
  * @ brief:
  *
- * Helper functions for debugging and printing strings and numbers without 
- * libc.
+ * Print function for debugging.
  *
  * @ author: Ivan Pavic (@dumpram)
  * 
@@ -10,7 +9,9 @@
  *
  */
 #include <string.h>
-#include <hypercall.h>
+#include <xen/hypercall.h>
+
+static char debug_buffer[100];
 
 static int number_to_buffer(char *p, unsigned int num);
 
@@ -36,6 +37,13 @@ void dump_register(char *out, char *reg_name, unsigned value)
     *out = '\n';
     out++;
     out = '\0';
+}
+
+void print_register(char *reg_name, unsigned int value)
+{
+    dump_register(debug_buffer, reg_name, value);  
+    HYPERVISOR_console_io(HYPERCALL_WRITE, strlen(debug_buffer), debug_buffer);
+    memset(debug_buffer, 0, sizeof(debug_buffer));
 }
 
 static void shift_array(char *p, int len)

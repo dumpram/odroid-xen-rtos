@@ -49,5 +49,11 @@ CFLAGS += -D __XEN__
 # Assembler flags
 AFLAGS += -x assembler-with-cpp
 
+# Linker flags
+LDFLAGS = -static -nostartfiles -build-id=none 
+
+# ObjCopy flags
+BINFLAGS = -O binary
+
 # Linker script is architecture dependent
 LINKER_SCRIPT = arch/arm/linker.lds

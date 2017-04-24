@@ -23,7 +23,7 @@ struct gic {
     volatile char *gicc_base;
 };
 
-static struct gic gic;
+struct gic gic;
 
 extern unsigned int p2v_offset;
 

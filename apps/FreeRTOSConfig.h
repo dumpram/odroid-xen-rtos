@@ -90,8 +90,10 @@ void vSetupTickInterrupt();
 #include <xen/arch-arm.h>
 #include <irqchip/gic.h>
 
+extern struct gic gic;
+
 #define configUNIQUE_INTERRUPT_PRIORITIES 128
-#define configINTERRUPT_CONTROLLER_BASE_ADDRESS GUEST_GICD_BASE
+#define configINTERRUPT_CONTROLLER_BASE_ADDRESS ((uint32_t)gic.gicd_base)
 #define configINTERRUPT_CONTROLLER_CPU_INTERFACE_OFFSET 0x1000
 #define configSETUP_TICK_INTERRUPT() vSetupTickInterrupt()
 

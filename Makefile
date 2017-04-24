@@ -12,10 +12,13 @@ include config.mk
 PROJECT_ROOT = $(shell pwd)
 export PROJECT_ROOT
 
-all: app.bin
+SUBMODULES = api arch drivers lib apps
+APPS = APPS
+
+all: export
 
 obj/app.elf : submodules
-	$(eval OBJECTS = $(shell find . -name *.o))
+	$(eval OBJECTS = $(shell find $(SUBMODULES) -name *.o))
 	$(LD) $(OBJECTS) \
 	$(LDFLAGS) -o $@ \
 	-L$(LIB_GCC) -L$(LIB_C) \
@@ -28,16 +31,17 @@ obj/app.elf : submodules
 	@echo "Generated binary successfully!"
 
 submodules:
-	+$(MAKE) -C api
-	+$(MAKE) -C arch
-	+$(MAKE) -C drivers
-	+$(MAKE) -C lib
-
+	$(foreach submodule,$(SUBMODULES),$(MAKE) -C $(submodule) && ) true
+	+$(MAKE) -C apps
 
 clean:
 	+$(MAKE) -C api clean
 	+$(MAKE) -C arch clean
 	+$(MAKE) -C drivers clean
 	+$(MAKE) -C lib clean
+	+$(MAKE) -C apps clean
 	rm obj/app.elf
 	rm app.bin
+
+export: app.bin
+	scp app.bin odroid:~

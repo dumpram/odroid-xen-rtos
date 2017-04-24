@@ -1,17 +1,18 @@
 ################################################################################
 # Project: odroid-xen-rtos
 # 
-# Module: lib
+# Module: apps
 # 
 # Author: Ivan Pavic (@dumpram)
 #
 # version: 0.0.0
 ################################################################################
 
+APPS = $(shell find . -type d -name "*" -not -path ".")
+
+
 all:
-	+$(MAKE) -C FreeRTOS
-	+$(MAKE) -C utils
+	$(foreach app,$(APPS),$(MAKE) -C $(app) && ) true
 
 clean:
-	+$(MAKE) -C FreeRTOS clean
-	+$(MAKE) -C utils clean
+	$(foreach app,$(APPS),$(MAKE) -C $(app) clean && ) true
