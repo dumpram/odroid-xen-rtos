@@ -11,7 +11,8 @@
 #ifndef _GIC_H
 #define _GIC_H
 
-#include <stdint.h>
+#include <types.h>
+#include <interrupt.h>
 
 // Distributor Interface
 #define GICD_CTLR         0x0
@@ -40,5 +41,6 @@ uint32_t gic_pmr();
 uint32_t gic_bpr();
 uint32_t gic_rpr();
 
+extern irq_chip_t gic_driver;
 
 #endif /*----------  End of header file gic.h  ----------*/

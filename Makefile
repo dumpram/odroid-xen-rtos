@@ -19,7 +19,7 @@ all: export
 
 obj/app.elf : submodules
 	$(eval OBJECTS = $(shell find $(SUBMODULES) -name *.o))
-	$(LD) $(OBJECTS) \
+	@$(LD) $(OBJECTS) \
 	$(LDFLAGS) -o $@ \
 	-L$(LIB_GCC) -L$(LIB_C) \
 	-lgcc -lc  \
@@ -43,8 +43,8 @@ clean:
 	+$(MAKE) -C drivers clean
 	+$(MAKE) -C lib clean
 	+$(MAKE) -C apps clean
-	rm obj/app.elf
-	rm app.bin
+	rm -f obj/app.elf
+	rm -f app.bin
 
 export: app.bin
 	scp app.bin odroid:~

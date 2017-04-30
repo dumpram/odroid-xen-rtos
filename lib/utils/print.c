@@ -23,12 +23,7 @@ void print_simple(char *buf)
 void dump_register(char *out, char *reg_name, unsigned value)
 {
     strcpy(out, reg_name);
-    //__asm("mov r6, #100");
     out = out + strlen(reg_name);
-    //__asm("mov r6, #101");
-    //strcpy(out, " : ");
-    //__asm("mov r6, #102");
-    
     *out = ':';
     out = out + 1;
 
@@ -75,13 +70,7 @@ static int number_to_buffer(char *p, unsigned int num)
             shift_array(p, len);
         }
     } while (num > 0);
-
-    while (num > 0)
-    {
-
-    }
-
-
     p[len] = 0;
+
     return len;
 }

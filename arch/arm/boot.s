@@ -105,7 +105,7 @@ stage2:
 
     ldr lr,=__main
     mov r0, r9                  @ Pass physical to virtual offset to arch_init
-    b arch_init
+    b arch_early_init
 
 __main:
     ldr lr,=__exit              @ go to exit after main

@@ -11,6 +11,10 @@
 #include <stdint.h>
 #include <xen/arch-arm.h>
 
+#include <interrupt.h>
+#include <memory.h>
+#include <types.h>
+
 // Base addresses
 #define GICC_BASE GUEST_GICC_BASE
 #define GICD_BASE GUEST_GICD_BASE
@@ -162,9 +166,8 @@ void gic_eoir(struct gic *gic, uint32_t irq) {
 
 void gic_init() 
 {
-
-    gic.gicd_base = (char *)((void *)GICD_BASE - p2v_offset);
-    gic.gicc_base = (char *)((void *)GICC_BASE - p2v_offset);
+    gic.gicd_base = p2v_translate(GICD_BASE); //(char *)((void *)GICD_BASE - p2v_offset);
+    gic.gicc_base = p2v_translate(GICC_BASE); //(char *)((void *)GICC_BASE - p2v_offset);
 
     gic_disable_interrupts(&gic);
     gic_cpu_set_priority(&gic, 0xff);
@@ -191,3 +194,38 @@ uint32_t gic_rpr()
 {
     return REG_READ32(REG(g_gicc(gic, GICC_IAR)));
 }
+
+// not implemented
+static interrupt_err_t gic_drv_disable_irq(int irq_num, int flags)
+{
+    interrupt_err_t err = INTERRUPT_ERR_OK;
+
+    return err;
+}
+
+
+static interrupt_err_t gic_drv_enable_irq(int irq_num, int flags)
+{
+    interrupt_err_t err = INTERRUPT_ERR_OK;
+
+    gic_enable_interrupt(&gic, irq_num, 0x1, flags);
+
+    return err;
+}
+
+static interrupt_err_t gic_drv_init(void)
+{
+    interrupt_err_t err = INTERRUPT_ERR_OK;
+
+    gic_init();
+
+    return err;
+}
+
+irq_chip_t gic_driver = 
+{
+    .init = gic_drv_init,
+    .disable_irq = gic_drv_disable_irq,
+    .enable_irq = gic_drv_enable_irq,
+    .deinit = NULL
+};
