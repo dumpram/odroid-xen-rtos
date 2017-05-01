@@ -8,8 +8,9 @@
  * @ year: 2017
  *
  */
-#include <stdint.h>
+#include <types.h>
 
+#define GT_VIRTUAL_TIMER_IRQ_NUM 27
 
 /*----------  Common timer settings  ----------*/
 

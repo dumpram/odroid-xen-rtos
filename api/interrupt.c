@@ -8,53 +8,11 @@
  * @ year: 2017
  *
  */
-#include <FreeRTOS.h>
-#include <task.h>
-#include <clocksource/gt.h>
-
-#define GT_RATE 24000000
-
-extern int ulPortYieldRequired;
-
-
-void setup_timer_interrupt()
-{
-    gt_set_cntv_cval(-1); // 0xffffffffffffffff for no overflow
-    gt_set_cntv_tval(GT_RATE/1000); // overflow after 1 ms
-    gt_set_cntv_ctl(1); // enable timer
-}
-
-void reload_timer()
-{
-    gt_set_cntv_tval(GT_RATE/1000);
-}
-
-void vSetupTickInterrupt()
-{
-    setup_timer_interrupt();
-}
-
-void vApplicationFPUSafeIRQHandler()
-{
-    gt_set_cntv_ctl(2);
-
-    if (xTaskIncrementTick() != pdFALSE)
-    {
-        ulPortYieldRequired = pdTRUE;
-    }
-
-    reload_timer();
-
-    gt_set_cntv_ctl(1);
-}
-
-
-// 
-// interrupt API
-//
 #define INTERRUPT_IRQ_NUM 1024
 
 #include <interrupt.h>
+#include <utils/print.h>
+#include <types.h>
 
 static void (*handler[INTERRUPT_IRQ_NUM])();
 
@@ -120,7 +78,7 @@ interrupt_err_t interrupt_register_handler(int irq_num, void (*hdlr)(void))
 {
     interrupt_err_t err = INTERRUPT_ERR_OK;
 
-    if (irq_num < 0 || irq_num >= INTERRUPT_IRQ_NUM)
+    if (!(irq_num < 0 || irq_num >= INTERRUPT_IRQ_NUM))
     {
         handler[irq_num] = hdlr;
     }
@@ -132,15 +90,10 @@ interrupt_err_t interrupt_register_handler(int irq_num, void (*hdlr)(void))
     return err;
 }
 
-void irq_handler(void)
+void irq_handler(int curr_active_irq)
 {
-    int i;
-
-    for (i = 0; i < INTERRUPT_IRQ_NUM; i++)
+    if (handler[curr_active_irq] != NULL)
     {
-        if (handler[i] != NULL)
-        {
-            handler[i]();
-        }
+        handler[curr_active_irq]();
     }
 }

@@ -45,11 +45,11 @@ int main()
     }
     
     ret =  xTaskCreate(vTask2, "Task 2", 1000, NULL, 2, NULL);
-    if (ret == pdPASS) 
+    if (ret == pdPASS)
     {
         print_simple("Task 2 succesfully created.\n");
     } 
-    else 
+    else
     {
         print_simple("Task not created.\n");
     }

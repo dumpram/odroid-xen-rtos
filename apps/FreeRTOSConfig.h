@@ -5,7 +5,8 @@
 #define configUSE_PREEMPTION                    1
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
 #define configUSE_TICKLESS_IDLE                 0
-#define configCPU_CLOCK_HZ                      60000000
+#define configCPU_CLOCK_HZ                      1400000000
+#define configTICK_TIMER_HZ                     24000000
 #define configTICK_RATE_HZ                      1000
 #define configMAX_PRIORITIES                    5
 #define configMINIMAL_STACK_SIZE                128
@@ -89,12 +90,28 @@ void vSetupTickInterrupt();
 
 #include <xen/arch-arm.h>
 #include <irqchip/gic.h>
+#include <clocksource/gt.h>
+#include <interrupt.h>
 
 extern struct gic gic;
+
+void FreeRTOS_Tick_Handler(void);
 
 #define configUNIQUE_INTERRUPT_PRIORITIES 128
 #define configINTERRUPT_CONTROLLER_BASE_ADDRESS ((uint32_t)gic.gicd_base)
 #define configINTERRUPT_CONTROLLER_CPU_INTERFACE_OFFSET 0x1000
-#define configSETUP_TICK_INTERRUPT() vSetupTickInterrupt()
+#define configSETUP_TICK_INTERRUPT() \
+do { \
+    interrupt_register_handler(GT_VIRTUAL_TIMER_IRQ_NUM, \
+        FreeRTOS_Tick_Handler); \
+    configCLEAR_TICK_INTERRUPT(); \
+} while(0)
+
+#define configCLEAR_TICK_INTERRUPT() \
+do { \
+    gt_set_cntv_ctl(2); \
+    gt_set_cntv_tval(configTICK_TIMER_HZ/configTICK_RATE_HZ); \
+    gt_set_cntv_ctl(1); \
+} while(0)
 
 #endif /* FREERTOS_CONFIG_H */

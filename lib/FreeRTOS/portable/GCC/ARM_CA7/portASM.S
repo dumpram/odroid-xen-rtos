@@ -344,7 +344,7 @@ ulMaxAPIPriorityMaskConst: .word ulMaxAPIPriorityMask
 vTaskSwitchContextConst: .word vTaskSwitchContext
 vApplicationIRQHandlerConst: .word vApplicationIRQHandler
 ulPortInterruptNestingConst: .word ulPortInterruptNesting
-vApplicationFPUSafeIRQHandlerConst: .word vApplicationFPUSafeIRQHandler
+vApplicationFPUSafeIRQHandlerConst: .word irq_handler
 
 .end
 
