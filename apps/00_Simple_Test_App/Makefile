@@ -1,7 +1,7 @@
 ################################################################################
 # Project: odroid-xen-rtos
 # 
-# Module: apps/simple_app
+# Module: apps/00_Simple_Test_App
 # 
 # Author: Ivan Pavic (@dumpram)
 #
@@ -10,7 +10,7 @@
 
 include ../../config.mk
 
-MODULE_NAME = simple_app
+MODULE_NAME = $(notdir $(shell pwd))
 
 SRC  = $(wildcard *.c)
 OBJ  = $(patsubst %.c, %.o, $(SRC))
@@ -18,7 +18,7 @@ OBJ  = $(patsubst %.c, %.o, $(SRC))
 ASRC = $(wildcard *.s)
 AOBJ = $(patsubst %.s, %.o, $(ASRC))
 
-all: $(OBJ) $(AOBJ)
+all: $(MODULE_NAME).bin
 
 %.o: %.c Makefile
 	@$(CC) $(CFLAGS) -c $< -o $@
@@ -26,8 +26,22 @@ all: $(OBJ) $(AOBJ)
 
 %.o : %.s Makefile
 	@$(AS) $(CFLAGS) $(AFLAGS) -c $< -o $@
-	@echo "Compiled "$<" successfully!"
+	@echo "$(MODULE_NAME): Compiled "$<" successfully!"
+
+%.elf : $(AOBJ) $(OBJ)
+	@$(LD) $(MODULES) $(AOBJ) $(OBJ) \
+	$(LDFLAGS) -o $@ \
+	-L$(LIB_GCC) -L$(LIB_C) \
+	-lgcc -lc  \
+	-T$(LINKER_SCRIPT)
+	@echo "$(MODULE_NAME): Linked app successfully!"
+
+$(MODULE_NAME).bin : $(MODULE_NAME).elf
+	@$(BIN) $< $(BINFLAGS) $@
+	@echo "$(MODULE_NAME): Generated binary successfully!"
 
 clean:
 	@rm -f $(AOBJ) $(OBJ)
 	@echo "$(MODULE_NAME): Clean complete"
+	@rm -f $(MODULE_NAME).bin
+	@rm -f $(MODULE_NAME).elf

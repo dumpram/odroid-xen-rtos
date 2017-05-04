@@ -16,8 +16,7 @@
 
 static void (*handler[INTERRUPT_IRQ_NUM])();
 
-static irq_chip_t *irq_chip; 
-
+static irq_chip_t *irq_chip;
 
 interrupt_err_t interrupt_api_init(irq_chip_t *chip)
 {

@@ -10,7 +10,6 @@
 
 APPS = $(shell find . -type d -name "*" -not -path ".")
 
-
 all:
 	$(foreach app,$(APPS),$(MAKE) -C $(app) && ) true
 

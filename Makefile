@@ -12,39 +12,21 @@ include config.mk
 PROJECT_ROOT = $(shell pwd)
 export PROJECT_ROOT
 
-SUBMODULES = api arch drivers lib apps
-APPS = APPS
+SUBMODULES = $(PROJECT_ROOT)/api $(PROJECT_ROOT)/arch $(PROJECT_ROOT)/drivers \
+			 $(PROJECT_ROOT)/lib
 
 all: export
 
-obj/app.elf : submodules
-	$(eval OBJECTS = $(shell find $(SUBMODULES) -name *.o))
-	@$(LD) $(OBJECTS) \
-	$(LDFLAGS) -o $@ \
-	-L$(LIB_GCC) -L$(LIB_C) \
-	-lgcc -lc  \
-	-T$(LINKER_SCRIPT)
-	@echo "Linked app successfully!"
-
-%.bin : obj/%.elf
-	@$(BIN) $< $(BINFLAGS) $@
-	@echo "Generated binary successfully!"
-
-submodules: dirs
+submodules:
 	$(foreach submodule,$(SUBMODULES),$(MAKE) -C $(submodule) && ) true
-	+$(MAKE) -C apps
+    
+apps: submodules
+	$(eval OBJECTS = $(shell find $(SUBMODULES) -name *.o))
+	+$(MAKE) -C apps MODULES="$(OBJECTS)"
 
-dirs:
-	mkdir -p obj
-	
 clean:
-	+$(MAKE) -C api clean
-	+$(MAKE) -C arch clean
-	+$(MAKE) -C drivers clean
-	+$(MAKE) -C lib clean
+	$(foreach submodule,$(SUBMODULES),$(MAKE) -C $(submodule) clean && ) true
 	+$(MAKE) -C apps clean
-	rm -f obj/app.elf
-	rm -f app.bin
 
-export: app.bin
-	scp app.bin odroid:~
+export: apps
+	scp apps/01_Free_RTOS_Sync_App/01_Free_RTOS_Sync_App.bin odroid:~/app.bin

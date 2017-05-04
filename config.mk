@@ -56,4 +56,4 @@ LDFLAGS = -static -nostartfiles -build-id=none
 BINFLAGS = -O binary
 
 # Linker script is architecture dependent
-LINKER_SCRIPT = arch/arm/linker.lds
+LINKER_SCRIPT = $(PROJECT_ROOT)/arch/arm/linker.lds
