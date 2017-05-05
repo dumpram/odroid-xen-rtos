@@ -11,6 +11,8 @@
 #include <gpio.h>
 #include <types.h>
 
+#include <utils/print.h>
+
 
 static gpio_driver_t *gpio_drv;
 

@@ -13,6 +13,8 @@
 #include <gpio.h>
 #include <memory.h>
 
+#include <utils/print.h>
+
 #include "exynos5422-gpio.h"
 
 typedef enum _gpio_port_t {
@@ -112,10 +114,10 @@ static void exynos5422_gpio_set_value(int pinnum, int value)
         default : base_address = 0x0;
     }
     // clear value
-    *(base_address + (GPIO_DATA_OFFS >> 2)) &= ~(1 << (pin * 4));
+    *(base_address + (GPIO_DATA_OFFS >> 2)) &= ~(1 << (pin));
 
     // set value
-    *(base_address + (GPIO_DATA_OFFS >> 2)) |= (value_bit << (pin * 4));  
+    *(base_address + (GPIO_DATA_OFFS >> 2)) |= (value_bit << (pin));  
 }
 
 static void exynos5422_gpio_set_pupd(int pinnum, int flags)
