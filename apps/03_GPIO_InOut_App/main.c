@@ -15,6 +15,7 @@
 #include <utils/print.h>
 #include <gpio.h>
 
+// pin numbers correspond to ODROID-XU3 header
 #define GPIO_PIN_OUT 10
 #define GPIO_PIN_IN  24
 
@@ -22,32 +23,6 @@
 xSemaphoreHandle xBinarySemaphore;
 
 void vTask1()
-{
-    int i = 0;
-
-    while(1)
-    {
-        xSemaphoreTake(xBinarySemaphore, portMAX_DELAY);
-        print_register("Task 1", i++);
-        xSemaphoreGive(xBinarySemaphore);
-        vTaskDelay(configTICK_RATE_HZ / 2);
-    }
-}
-
-void vTask2()
-{
-    int i = 0;
-
-    while(1)
-    {
-        xSemaphoreTake(xBinarySemaphore, portMAX_DELAY);
-        print_register("Task 2", i++);
-        xSemaphoreGive(xBinarySemaphore);
-        vTaskDelay(configTICK_RATE_HZ * 1);
-    }
-}
-
-void vTask3()
 {
     TickType_t lastWakeUp;
     gpio_init(GPIO_PIN_OUT, 1);
@@ -60,6 +35,24 @@ void vTask3()
         gpio_set_value(GPIO_PIN_OUT, 1);
         vTaskDelayUntil(&lastWakeUp, 10);
         gpio_set_value(GPIO_PIN_OUT, 0);
+    }
+}
+
+void vTask2()
+{
+    int value;
+    gpio_init(GPIO_PIN_IN, 0);
+    
+    value = gpio_get_value(GPIO_PIN_IN);
+
+    while(1)
+    {
+        while (value == gpio_get_value(GPIO_PIN_IN))
+        {
+            vTaskDelay(configTICK_RATE_HZ / 100); // wait 10 ms
+        }
+        print_simple("State changed!\n");
+        value = gpio_get_value(GPIO_PIN_IN);
     }
 }
 
@@ -84,16 +77,6 @@ int main()
     if (ret == pdPASS)
     {
         print_simple("Task 2 succesfully created.\n");
-    } 
-    else
-    {
-        print_simple("Task not created.\n");
-    }
-
-    ret =  xTaskCreate(vTask3, "Task 3", 500, NULL, 3, NULL);
-    if (ret == pdPASS)
-    {
-        print_simple("Task 3 succesfully created.\n");
     } 
     else
     {
