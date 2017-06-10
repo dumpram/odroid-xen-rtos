@@ -70,7 +70,7 @@ static gpio_port_t pinnum_to_port(int pinnum)
         case 26 : port = GPIO_PORT_X2; break;
         case 27 : port = GPIO_PORT_X1; break;
         
-        default : port = -1; print_simple("Specified pin isn't supported!"); 
+        default : port = -1; print_simple("Specified pin isn't supported!\n"); 
     }
 
     return (gpio_port_t) port;
@@ -107,20 +107,36 @@ static int pinnum_to_pin(int pinnum)
         case 26 : pin = 0; break;
         case 27 : pin = 1; break;
 
-        default: pin = -1; print_simple("Specified pin isn't supported!");
+        default: pin = -1; print_simple("Specified pin isn't supported!\n");
     }
 
 
     return pin;
 }
 
-static void exynos5422_gpio_init(int pinnum, int direction)
+static void exynos5422_gpio_init(int pinnum, gpio_mode_t mode)
 {
     gpio_port_t port = pinnum_to_port(pinnum);
     int pin = pinnum_to_pin(pinnum);
     volatile uint32_t *base_address;
     uint32_t ctrl_offset;
-    int direction_bit = (direction) ? 1 : 0;
+    int direction_bit;
+
+    switch (mode)
+    {
+        case GPIO_MODE_IN :
+            direction_bit = 0;
+        break;
+        case GPIO_MODE_OUT :
+            direction_bit = 1;
+        break;
+        case GPIO_MODE_EXTINT :
+            direction_bit = 0xF;
+        break;
+        default : 
+            print_simple("Specified pin mode isn't supported!\n"); 
+            return;
+    }
 
     switch (port)
     {
@@ -140,7 +156,7 @@ static void exynos5422_gpio_init(int pinnum, int direction)
         break;
 
 
-        default : print_simple("Specified pin isn't supported!"); return;
+        default : print_simple("Specified pin isn't supported!\n"); return;
     }
 
     // reset old configuration
@@ -150,13 +166,29 @@ static void exynos5422_gpio_init(int pinnum, int direction)
     *(base_address + (ctrl_offset >> 2)) |= (direction_bit << (pin * 4));
 }
 
-static void exynos5422_gpio_set_direction(int pinnum, int direction)
+static void exynos5422_gpio_set_direction(int pinnum, gpio_mode_t mode)
 {
     gpio_port_t port = pinnum_to_port(pinnum);
     int pin = pinnum_to_pin(pinnum);
     volatile uint32_t *base_address;
     uint32_t ctrl_offset;
-    int direction_bit = (direction) ? 1 : 0;
+    int direction_bit;
+
+    switch (mode)
+    {
+        case GPIO_MODE_IN :
+            direction_bit = 0;
+        break;
+        case GPIO_MODE_OUT :
+            direction_bit = 1;
+        break;
+        case GPIO_MODE_EXTINT :
+            direction_bit = 0xF;
+        break;
+        default : 
+            print_simple("Specified pin mode isn't supported!\n"); 
+            return;
+    }
 
     switch (port)
     {
@@ -175,7 +207,7 @@ static void exynos5422_gpio_set_direction(int pinnum, int direction)
             ctrl_offset = GPX2_CTRL_OFFS;
         break;
 
-        default : print_simple("Specified pin isn't supported!"); return;
+        default : print_simple("Specified pin isn't supported!\n"); return;
     }
     // clear direction
     *(base_address + (ctrl_offset >> 2)) &= ~(1 << (pin * 4));
@@ -209,7 +241,7 @@ static void exynos5422_gpio_set_value(int pinnum, int value)
             data_offset = GPX2_DATA_OFFS;
         break;
 
-        default : print_simple("Specified pin isn't supported!"); return;
+        default : print_simple("Specified pin isn't supported!\n"); return;
     }
     // clear value
     *(base_address + (data_offset >> 2)) &= ~(1 << (pin));
@@ -247,7 +279,7 @@ static int exynos5422_gpio_get_value(int pinnum)
             data_offset = GPX2_DATA_OFFS;
         break;
 
-        default : print_simple("Specified pin isn't supported!"); return -1;
+        default : print_simple("Specified pin isn't supported!\n"); return -1;
     }
     // get value
     int value = *(base_address + (data_offset >> 2)) & (1 << (pin));

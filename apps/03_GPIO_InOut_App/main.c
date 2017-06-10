@@ -41,7 +41,7 @@ void vTask1()
 void vTask2()
 {
     int value;
-    gpio_init(GPIO_PIN_IN, 0);
+    gpio_init(GPIO_PIN_IN, GPIO_MODE_IN);
     
     value = gpio_get_value(GPIO_PIN_IN);
 
@@ -49,7 +49,8 @@ void vTask2()
     {
         while (value == gpio_get_value(GPIO_PIN_IN))
         {
-            vTaskDelay(configTICK_RATE_HZ / 100); // wait 10 ms
+            vTaskDelay(configTICK_RATE_HZ); // wait 1 second
+            print_register("pin_value", value);
         }
         print_simple("State changed!\n");
         value = gpio_get_value(GPIO_PIN_IN);

@@ -32,19 +32,19 @@ gpio_err_t gpio_api_init(gpio_driver_t *drv)
     return err;
 }
 
-void gpio_init(int pin, int direction)
+void gpio_init(int pin, gpio_mode_t mode)
 {
-    gpio_drv->gpio_drv_init(pin, direction);
+    gpio_drv->gpio_drv_init(pin, mode);
 }
 
-void gpio_set_value(int pin, int direction)
+void gpio_set_value(int pin, int value)
 {
-    gpio_drv->gpio_drv_set_value(pin, direction);
+    gpio_drv->gpio_drv_set_value(pin, value);
 }
 
-void gpio_set_direction(int pin, int direction)
+void gpio_set_direction(int pin, gpio_mode_t mode)
 {
-    gpio_drv->gpio_drv_set_direction(pin, direction);
+    gpio_drv->gpio_drv_set_direction(pin, mode);
 }
 
 int gpio_get_value(int pin)
