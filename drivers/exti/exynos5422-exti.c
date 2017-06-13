@@ -8,9 +8,9 @@
  * @ year: 2017
  *
  */
+#include <exti.h>
 
-
-exti_err_t exynos5422_mask_irq(int exti_line_num, int mask)
+exti_err_t exynos5422_exti_mask_irq(int exti_line_num, int mask)
 {
     exti_err_t err = EXTI_ERR_OK;
 
@@ -19,7 +19,7 @@ exti_err_t exynos5422_mask_irq(int exti_line_num, int mask)
     return err;
 }
 
-exti_err_t exynos5422_set_filt(int exti_line_num, int filt_mask)
+exti_err_t exynos5422_exti_set_filt(int exti_line_num, int filt_mask)
 {
     exti_err_t err = EXTI_ERR_OK;
 
@@ -28,7 +28,7 @@ exti_err_t exynos5422_set_filt(int exti_line_num, int filt_mask)
     return err;
 }
 
-exti_err_t exynos5422_set_trigger(int exti_line_num, exti_mode_t mode)
+exti_err_t exynos5422_exti_set_trigger(int exti_line_num, exti_mode_t mode)
 {
     exti_err_t err = EXTI_ERR_OK;
 
@@ -36,9 +36,9 @@ exti_err_t exynos5422_set_trigger(int exti_line_num, exti_mode_t mode)
     return err;
 }
 
-int exynos5422_get_pend(int exti_line_num)
+int exynos5422_exti_get_pend(int exti_line_num)
 {
-    int pend_status;
+    int pend_status = 0;
 
 
     return pend_status;

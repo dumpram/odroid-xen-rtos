@@ -25,7 +25,7 @@ typedef enum {
 } exti_mode_t;
 
 typedef struct _exti_driver_t {
-    exti_err_t (*exti_drv_mask_irq)(int exti_line_num, exti_mode_t mode);
+    exti_err_t (*exti_drv_mask_irq)(int exti_line_num, int mask);
     exti_err_t (*exti_drv_set_filt)(int exti_line_num, int mask);
     int  (*exti_drv_get_pend)(int exti_line_num);
     exti_err_t (*exti_drv_set_trigger)(int exti_line_num, exti_mode_t mode);
