@@ -142,7 +142,7 @@ static void exynos5422_gpio_init(int pinnum, gpio_mode_t mode)
     {
         case GPIO_PORT_A2 : 
             base_address = p2v_translate(GPA2_BASE_ADDR);
-            ctrl_offset = GPA2_CTRL_OFFS; 
+            ctrl_offset = GPA2_CTRL_OFFS;
         break;
 
         case GPIO_PORT_X1 :

@@ -36,6 +36,7 @@ void free_rtos_init()
 void arch_early_init(uint32_t offset)
 {
     print_simple("Arch early init!\n");
+    print_register("offset", offset);
 
     // initialize memory first with physical to virtual offset 
     memory_api_init(offset);

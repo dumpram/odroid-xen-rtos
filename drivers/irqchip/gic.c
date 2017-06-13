@@ -111,7 +111,7 @@ void gic_enable_interrupt(struct gic *gic, int irq_number,
     void *cfg_reg;
 
     // set priority
-    gic_set_priority(gic, irq_number, 0x0);
+    // gic_set_priority(gic, irq_number, 0x0);
 
     // set target cpus for this interrupt
     gic_route_interrupt(gic, irq_number, cpu_set);
@@ -174,6 +174,8 @@ void gic_init()
 
     gic_enable_interrupts(&gic);
 
+    gic_set_priority(&gic, VIRTUALTIMER_IRQ, 5);
+
     gic_enable_interrupt(&gic, 
         VIRTUALTIMER_IRQ /* interrupt number */, 
         0x1 /*cpu_set*/, 
@@ -222,10 +224,21 @@ static interrupt_err_t gic_drv_init(void)
     return err;
 }
 
+static interrupt_err_t gic_drv_set_priority(int irq_num, int priority)
+{
+    interrupt_err_t err = INTERRUPT_ERR_OK;
+
+    gic_set_priority(&gic, irq_num, priority);
+
+    return err;
+}
+
 irq_chip_t gic_driver = 
 {
     .init = gic_drv_init,
     .disable_irq = gic_drv_disable_irq,
     .enable_irq = gic_drv_enable_irq,
+    .disable_irq = gic_drv_disable_irq,
+    .set_priority = gic_drv_set_priority,
     .deinit = NULL
 };

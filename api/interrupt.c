@@ -89,6 +89,23 @@ interrupt_err_t interrupt_register_handler(int irq_num, void (*hdlr)(void))
     return err;
 }
 
+interrupt_err_t interrupt_set_priority(int irq_num, int priority)
+{
+    interrupt_err_t err = INTERRUPT_ERR_OK;
+
+    if (irq_chip == NULL || irq_chip->set_priority == NULL)
+    {
+        err = INTERRUPT_ERR_BAD;
+    }
+
+    if (!err)
+    {
+        err = irq_chip->set_priority(irq_num, priority);
+    }
+
+    return err;
+}
+
 void irq_handler(int curr_active_irq)
 {
     if (handler[curr_active_irq] != NULL)

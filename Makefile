@@ -29,4 +29,4 @@ clean:
 	+$(MAKE) -C apps clean
 
 export: apps
-	scp apps/03_GPIO_InOut_App/03_GPIO_InOut_App.bin odroid:~/app.bin
+	scp apps/04_GPIO_InterruptTest_App/04_GPIO_InterruptTest_App.bin odroid:~/app.bin

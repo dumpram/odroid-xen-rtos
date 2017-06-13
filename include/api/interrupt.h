@@ -20,6 +20,7 @@ typedef struct _irq_chip_t {
     interrupt_err_t (*init)(void);
     interrupt_err_t (*disable_irq)(int irq_num, int params);
     interrupt_err_t (*enable_irq)(int irq_num, int params);
+    interrupt_err_t (*set_priority)(int irq_num, int priority);
     interrupt_err_t (*deinit)(void);
 } irq_chip_t;
 
@@ -27,7 +28,9 @@ typedef struct _irq_chip_t {
 interrupt_err_t interrupt_api_init(irq_chip_t *chip);
 interrupt_err_t interrupt_disable_irq(int irq_num, int flags);
 interrupt_err_t interrupt_enable_irq(int irq_num, int flags);
+interrupt_err_t interrupt_set_priority(int irq_num, int priority);
 interrupt_err_t interrupt_register_handler(int irq_num, void (*hdlr)(void));
+
 
 
 
