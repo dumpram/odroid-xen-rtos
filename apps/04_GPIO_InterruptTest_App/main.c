@@ -15,6 +15,7 @@
 #include <utils/print.h>
 #include <gpio.h>
 #include <interrupt.h>
+#include <exti.h>
 
 // pin numbers correspond to ODROID-XU3 header
 #define GPIO_PIN_OUT 10
@@ -52,6 +53,11 @@ void vTaskPinMonitor()
     gpio_init(GPIO_PIN_IN, GPIO_MODE_EXTINT);
     
     value = gpio_get_value(GPIO_PIN_IN);
+
+    for (int i = 16; i <= 31; i++)
+    {
+        exti_mask_irq(i, 0xF); // mask all exti interrupts
+    }
 
     err = interrupt_register_handler(64, external_irq_handler);
 
