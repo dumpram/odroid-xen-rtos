@@ -19,7 +19,7 @@
 
 // pin numbers correspond to ODROID-XU3 header
 #define GPIO_PIN_OUT 10
-#define GPIO_PIN_IN  24
+#define GPIO_PIN_IN  26
 
 
 xSemaphoreHandle xBinarySemaphore;
@@ -42,10 +42,22 @@ void vTaskHeartBeat()
     }
 }
 
+void clear()
+{
+    // ext_int irq clear (write 1 to position of exti line) 
+    exti_mask_irq(0, 0x1);
+    exti_clear_pend(0);
+    exti_mask_irq(0, 0x0);
+}
+
 void external_irq_handler()
 {
-    print_simple("Interrupt occured! :D\n");
-}
+    if (exti_get_pend(0))
+    {
+        print_simple("Interrupt occured! :D\n");
+        clear();
+    }
+}   
 
 void vTaskPinMonitor()
 {
@@ -54,10 +66,17 @@ void vTaskPinMonitor()
     
     value = gpio_get_value(GPIO_PIN_IN);
 
-    for (int i = 16; i <= 31; i++)
+    for (int i = 0; i < 8; i++)
     {
-        exti_mask_irq(i, 0xF); // mask all exti interrupts
+        exti_set_trigger(i, EXTI_MODE_TRIG_RISING); // set trigger on all lines
+        exti_clear_pend(i); // clear interrupt if pending
     }
+
+    for (int i = 0; i < 8; i++)
+    {
+        exti_mask_irq(i, 0x1); // mask all exti interrupts
+    }
+    exti_mask_irq(0, 0x0); // unmask eint16
 
     err = interrupt_register_handler(64, external_irq_handler);
 
@@ -77,7 +96,7 @@ void vTaskPinMonitor()
         print_simple("Interrupt priority set unsuccessful!\n");
     }
 
-    err = interrupt_enable_irq(64, 0);
+    err = interrupt_enable_irq(64, 1);
 
     if (!err)
     {

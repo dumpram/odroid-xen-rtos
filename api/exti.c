@@ -92,3 +92,19 @@ int exti_get_pend(int exti_line_num)
     }
     return pend_status;
 }
+
+exti_err_t exti_clear_pend(int exti_line_num)
+{
+    exti_err_t err = EXTI_ERR_OK;
+
+    if (exti_drv != NULL && exti_drv->exti_drv_set_trigger != NULL)
+    {
+        exti_drv->exti_drv_clear_pend(exti_line_num);
+    }
+    else
+    {
+        err = EXTI_ERR_BAD;
+    }
+
+    return err;
+}

@@ -21,7 +21,7 @@ typedef enum {
     EXTI_MODE_TRIG_HIGH,
     EXTI_MODE_TRIG_RISING,
     EXTI_MODE_TRIG_FALLING,
-    EXTI_MODE_TRIG_NONE
+    EXTI_MODE_TRIG_BOTH
 } exti_mode_t;
 
 typedef struct _exti_driver_t {
@@ -29,6 +29,7 @@ typedef struct _exti_driver_t {
     exti_err_t (*exti_drv_set_filt)(int exti_line_num, int mask);
     int  (*exti_drv_get_pend)(int exti_line_num);
     exti_err_t (*exti_drv_set_trigger)(int exti_line_num, exti_mode_t mode);
+    exti_err_t (*exti_drv_clear_pend)(int exti_line_num);
 } exti_driver_t;
 
 exti_err_t exti_api_init(exti_driver_t *drv);
@@ -36,5 +37,6 @@ exti_err_t exti_mask_irq(int exti_line_num, int mask);
 exti_err_t exti_set_filt(int exti_line_num, int filt_mask);
 exti_err_t exti_set_trigger(int exti_line_num, exti_mode_t mode);
 int exti_get_pend(int exti_line_num);
+exti_err_t exti_clear_pend(int exti_line_num);
 
 #endif /*----------  End of header file exti.h  ----------*/
