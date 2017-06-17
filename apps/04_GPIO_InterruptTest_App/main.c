@@ -32,17 +32,17 @@ void vTaskHeartBeat()
     while(1)
     {
         gpio_set_value(GPIO_PIN_OUT, 1);
-        vTaskDelay(configTICK_RATE_HZ / 4);
+        vTaskDelay(configTICK_RATE_HZ / 8);
         gpio_set_value(GPIO_PIN_OUT, 0);
-        vTaskDelay(configTICK_RATE_HZ / 4);
+        vTaskDelay(configTICK_RATE_HZ / 8);
         gpio_set_value(GPIO_PIN_OUT, 1);
-        vTaskDelay(configTICK_RATE_HZ / 4);
+        vTaskDelay(configTICK_RATE_HZ / 8);
         gpio_set_value(GPIO_PIN_OUT, 0);
         vTaskDelay(configTICK_RATE_HZ / 2);
     }
 }
 
-void clear()
+void clear_eint0()
 {
     // ext_int irq clear (write 1 to position of exti line) 
     exti_mask_irq(0, 0x1);
@@ -55,7 +55,7 @@ void external_irq_handler()
     if (exti_get_pend(0))
     {
         print_simple("Interrupt occured! :D\n");
-        clear();
+        clear_eint0();
     }
 }   
 
@@ -102,23 +102,15 @@ void vTaskPinMonitor()
     {
         print_simple("Interrupt enabled succesfully!\n");
     }
-
-    print_simple("Prije petlje\n");
-
     while(1)
     {
-        value = 1;
-        if (value)
+        while (value == gpio_get_value(GPIO_PIN_IN))
         {
-
+            vTaskDelay(configTICK_RATE_HZ); // wait 1 second
+            print_register("pin_value", value);
         }
-        // while (value == gpio_get_value(GPIO_PIN_IN))
-        // {
-        //     //vTaskDelay(configTICK_RATE_HZ); // wait 1 second
-        //     //print_register("pin_value", value);
-        // }
-        // print_simple("State changed!\n");
-        // value = gpio_get_value(GPIO_PIN_IN);
+        print_simple("State changed!\n");
+        value = gpio_get_value(GPIO_PIN_IN);
     }
 }
 
@@ -149,9 +141,7 @@ int main()
         print_simple("Task not created.\n");
     }
 
-    //vTaskStartScheduler();
-
-    vTaskPinMonitor();
+    vTaskStartScheduler();
 
     while (1);
 }

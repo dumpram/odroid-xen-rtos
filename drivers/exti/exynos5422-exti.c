@@ -25,15 +25,10 @@ exti_err_t exynos5422_exti_mask_irq(int exti_line_num, int mask)
 
     addr = p2v_translate(EXT_INT42_BASE_ADDR + EXT_INT42_MASK_OFFS);
 
-    print_simple("Masking EXTI!\n");
-
     // clear
     *(addr) &= ~(1 << exti_line_num); 
     // set 
     *(addr) |= (mask << exti_line_num);
-
-    print_register("mask-addr", *(addr));
-
 
     return err;
 }
@@ -83,10 +78,6 @@ exti_err_t exynos5422_exti_set_trigger(int exti_line_num, exti_mode_t mode)
     // set new
     *(addr) |= (real_mask << (4 * exti_line_num));
 
-    //if (real_mask == 1) {
-        print_register("exti_line", exti_line_num);
-        print_register("trig-mask", (*(addr) >> (4 * exti_line_num)) & 0x7);
-    //}
     return err;
 }
 
@@ -97,7 +88,6 @@ int exynos5422_exti_get_pend(int exti_line_num)
 
     addr = p2v_translate(EXT_INT42_BASE_ADDR + EXT_INT42_PEND_OFFS);
 
-    print_register("pend-addr", *addr);
     pend_status = *(addr) & (1 << exti_line_num);
 
     return !!pend_status;
@@ -113,13 +103,8 @@ exti_err_t exynos5422_exti_clear_pend(int exti_line_num)
     // write 1, not 0 to position of exti_line_num
     *(addr) &= (1 << exti_line_num);
 
-    print_register("pend-addr-clear", *addr);
-    
-
     return err;
 }
-
-
 
 exti_driver_t exynos5422_exti_driver = {
     .exti_drv_mask_irq = exynos5422_exti_mask_irq,
