@@ -1,8 +1,7 @@
-
 .macro zero_bss
 	@ BSS start and end MUST be word-aligned.
-	ldr	r0, =_bss_start
-	ldr	r1, =_bss_end
+	ldr	r0, =_sbss
+	ldr	r1, =_ebss
 	add	r1, r1, #4
 	mov	r2, #0
 

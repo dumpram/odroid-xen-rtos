@@ -17,6 +17,8 @@
 #include <interrupt.h>
 #include <exti.h>
 
+#include <stdio.h>
+
 // pin numbers correspond to ODROID-XU3 header
 #define GPIO_PIN_OUT 10
 #define GPIO_PIN_IN  26
@@ -68,15 +70,20 @@ void vTaskPinMonitor()
 
     for (int i = 0; i < 8; i++)
     {
-        exti_set_trigger(i, EXTI_MODE_TRIG_RISING); // set trigger on all lines
-        exti_clear_pend(i); // clear interrupt if pending
+        // set trigger on all lines
+        exti_set_trigger(i, EXTI_MODE_TRIG_RISING); 
+        // clear interrupt if pending
+        exti_clear_pend(i); 
     }
 
+    // mask all exti interrupts
     for (int i = 0; i < 8; i++)
     {
-        exti_mask_irq(i, 0x1); // mask all exti interrupts
+        exti_mask_irq(i, 0x1); 
     }
-    exti_mask_irq(0, 0x0); // unmask eint16
+
+    // unmask eint16
+    exti_mask_irq(0, 0x0); 
 
     err = interrupt_register_handler(64, external_irq_handler);
 
@@ -139,6 +146,11 @@ int main()
     else
     {
         print_simple("Task not created.\n");
+    }
+
+    if (ret == pdPASS)
+    {
+        printf("Newlib works!\n");
     }
 
     vTaskStartScheduler();

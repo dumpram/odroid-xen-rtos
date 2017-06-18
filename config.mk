@@ -14,7 +14,7 @@ PREFIX = ~/arm-compilers/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
 
 CC = $(PREFIX)gcc
 AS = $(PREFIX)gcc
-LD = $(PREFIX)ld
+LD = $(PREFIX)gcc
 AR = $(PREFIX)ar
 BIN = $(PREFIX)objcopy
 
@@ -50,7 +50,7 @@ CFLAGS += -D __XEN__
 AFLAGS += -x assembler-with-cpp
 
 # Linker flags
-LDFLAGS = -static -nostartfiles -build-id=none 
+LDFLAGS = -static -nostartfiles -specs=nosys.specs
 
 # ObjCopy flags
 BINFLAGS = -O binary

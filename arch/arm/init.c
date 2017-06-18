@@ -31,8 +31,8 @@ void free_rtos_init()
     ulICCPMR  = (uint32_t)gic.gicc_base + GICC_PMR;
 
     print_register("ulICCIAR",  ulICCIAR);
-    print_register("ulICCEOIR", ulICCIAR);
-    print_register("ulICCPMR",  ulICCIAR);
+    print_register("ulICCEOIR", ulICCEOIR);
+    print_register("ulICCPMR",  ulICCPMR);
 }
 
 void arch_early_init(uint32_t offset)
