@@ -19,6 +19,7 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include <memory.h>
 
 // pin numbers correspond to ODROID-XU3 header
 #define GPIO_PIN_HEARTBEAT 24
@@ -29,26 +30,33 @@ bool state = true;
 
 xSemaphoreHandle xBinarySemaphore;
 
-void clear_eint0()
+// External interrupt 42
+#define EXT_INT42_BASE_ADDR ((unsigned int)  0x13400000)
+#define EXT_INT42_PEND_OFFS ((unsigned int)  0xF48)
+
+// GPIOA2.4
+#define GPA2_BASE_ADDR  ((unsigned int)  0x14010000)
+#define GPA2_DATA_OFFS 0x0044
+
+#define ADDRG (volatile uint32_t *)( \
+    p2v_translate(GPA2_BASE_ADDR + GPA2_DATA_OFFS))
+#define ADDRP (volatile uint32_t *)( \
+    p2v_translate(EXT_INT42_BASE_ADDR + EXT_INT42_PEND_OFFS))
+
+static inline void clear_eint0_imm()
 {
-    // ext_int irq clear (write 1 to position of exti line) 
-    exti_mask_irq(0, 0x1);
-    exti_clear_pend(0);
-    exti_mask_irq(0, 0x0);
+    *(ADDRP) &= (1 << 0);
 }
 
-void external_irq_handler()
+static inline void gpio_toggle()
 {
-    if (exti_get_pend(0))
-    {
-        clear_eint0();
-        gpio_set_value(GPIO_PIN_OUT, !gpio_get_value(GPIO_PIN_OUT));
-        
-    }
-    else 
-    {
-        print_simple("Fatal error!\r\n");
-    }
+    *(ADDRG) ^= (1 << (1 * 4));
+}
+
+static void external_irq_handler()
+{
+    clear_eint0_imm();
+    gpio_toggle();
 }   
 
 void init_test()
@@ -136,9 +144,9 @@ int main()
         print_simple("Task not created.\n");
     }
 
-    vTaskStartScheduler();
+    //vTaskStartScheduler();
     
-    //vTaskHeartBeat();
+    init_test();
 
     while (1);
 }

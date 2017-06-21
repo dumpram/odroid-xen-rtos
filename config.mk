@@ -24,7 +24,7 @@ LIB_GCC = $(TOOLCHAIN_ROOT)/lib/gcc/arm-none-eabi/5.4.1
 # C source flags
 CFLAGS = -Wall \
          -Werror \
-         -mcpu=cortex-a7 \
+         -mcpu=cortex-a15 \
          -mfpu=vfpv4 \
          -mthumb-interwork \
          -mfloat-abi=softfp \
