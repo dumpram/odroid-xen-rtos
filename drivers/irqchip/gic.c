@@ -170,11 +170,11 @@ void gic_init()
     gic.gicc_base = p2v_translate(GICC_BASE); //(char *)((void *)GICC_BASE - p2v_offset);
 
     gic_disable_interrupts(&gic);
-    gic_cpu_set_priority(&gic, 0xff);
+    gic_cpu_set_priority(&gic, 0x0);
 
     gic_enable_interrupts(&gic);
 
-    gic_set_priority(&gic, VIRTUALTIMER_IRQ, 0);
+    gic_set_priority(&gic, VIRTUALTIMER_IRQ, 65);
 
     gic_enable_interrupt(&gic, 
         VIRTUALTIMER_IRQ /* interrupt number */, 

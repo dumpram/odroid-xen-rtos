@@ -70,7 +70,6 @@ void vTaskPoll()
     }
 }
 
-
 int main()
 {
     print_simple("Entered main!\n");

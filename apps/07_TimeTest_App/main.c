@@ -78,8 +78,7 @@ int main()
         print_simple("Task not created.\n");
     }
 
-//    vTaskStartScheduler();
-    vTaskTimeMeasure();
+    vTaskStartScheduler();
 
     while (1);
 }

@@ -88,6 +88,7 @@ void init_test()
 
 void vTaskHeartBeat()
 {
+    int i = 0;
     init_test();
     gpio_init(GPIO_PIN_HEARTBEAT, 1);
     gpio_set_value(GPIO_PIN_HEARTBEAT, 0);
@@ -102,6 +103,7 @@ void vTaskHeartBeat()
         vTaskDelay(configTICK_RATE_HZ / 8);
         gpio_set_value(GPIO_PIN_HEARTBEAT, 0);
         vTaskDelay(configTICK_RATE_HZ / 2);
+        print_register("Heartbeat", i++);
     }
 }
 
@@ -120,7 +122,7 @@ int main()
         print_simple("Task not created.\n");
     }
     
-    init_test();
+    vTaskStartScheduler();
 
     while(1)
     {
