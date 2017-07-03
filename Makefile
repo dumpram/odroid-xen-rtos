@@ -15,6 +15,8 @@ export PROJECT_ROOT
 SUBMODULES = $(PROJECT_ROOT)/api $(PROJECT_ROOT)/arch $(PROJECT_ROOT)/drivers \
 			 $(PROJECT_ROOT)/lib
 
+APP = 05_GPIO_InterruptLatency_App
+
 all: export
 
 submodules:
@@ -29,4 +31,4 @@ clean:
 	+$(MAKE) -C apps clean
 
 export: apps
-	scp apps/05_GPIO_InterruptLatency_App/05_GPIO_InterruptLatency_App.bin odroid:~/app.bin
+	scp apps/$(APP)/$(APP).bin odroid:~/app.bin

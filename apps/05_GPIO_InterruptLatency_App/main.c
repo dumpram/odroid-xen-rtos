@@ -16,6 +16,7 @@
 #include <gpio.h>
 #include <interrupt.h>
 #include <exti.h>
+#include <clocksource/gt.h>
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -53,10 +54,19 @@ static inline void gpio_toggle()
     *(ADDRG) ^= (1 << (1 * 4));
 }
 
+//static uint64_t start;
+
 static void external_irq_handler()
 {
+    //start = gt_get_cntvct();
     clear_eint0_imm();
-    gpio_toggle();
+    // exti_clear_pend(0);
+    // gpio_set_value(GPIO_PIN_OUT, !gpio_get_value(GPIO_PIN_OUT));
+    // int i = 2500;
+    // while(i--);
+    // gpio_toggle();
+
+    //printf("clear and toggle:%u\r\n", (unsigned int)(gt_get_cntvct() - start));
 }   
 
 void init_test()
@@ -65,7 +75,12 @@ void init_test()
     gpio_init(GPIO_PIN_IN, GPIO_MODE_EXTINT);
     gpio_init(GPIO_PIN_OUT, GPIO_MODE_OUT);
 
-    gpio_set_value(GPIO_PIN_OUT, 0);
+    gpio_set_value(GPIO_PIN_OUT, 1);
+    //*(ADDRG) &= ~(1 << 4);
+    //
+    
+    memory_set_device(0x14010000);
+    //memory_dump_page_table();
 
     for (int i = 0; i < 8; i++)
     {
@@ -102,7 +117,7 @@ void init_test()
         print_simple("Interrupt priority set unsuccessful!\n");
     }
 
-    err = interrupt_enable_irq(64, 1);
+    err = interrupt_enable_irq(64, 0);
 
     if (!err)
     {
@@ -148,5 +163,8 @@ int main()
     
     init_test();
 
-    while (1);
+    while(1)
+    {
+        //__asm("wfi");
+    }
 }

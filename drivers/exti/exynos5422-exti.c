@@ -15,7 +15,7 @@
 
 #include "exynos5422-exti.h"
 
-exti_err_t exynos5422_exti_mask_irq(int exti_line_num, int mask)
+static exti_err_t exynos5422_exti_mask_irq(int exti_line_num, int mask)
 {
     exti_err_t err = EXTI_ERR_OK;
 
@@ -33,7 +33,7 @@ exti_err_t exynos5422_exti_mask_irq(int exti_line_num, int mask)
     return err;
 }
 
-exti_err_t exynos5422_exti_set_filt(int exti_line_num, int filt_mask)
+static exti_err_t exynos5422_exti_set_filt(int exti_line_num, int filt_mask)
 {
     exti_err_t err = EXTI_ERR_OK;
 
@@ -42,7 +42,8 @@ exti_err_t exynos5422_exti_set_filt(int exti_line_num, int filt_mask)
     return err;
 }
 
-exti_err_t exynos5422_exti_set_trigger(int exti_line_num, exti_mode_t mode)
+static exti_err_t exynos5422_exti_set_trigger(int exti_line_num, 
+    exti_mode_t mode)
 {
     exti_err_t err = EXTI_ERR_OK;
 
@@ -93,7 +94,7 @@ int exynos5422_exti_get_pend(int exti_line_num)
     return !!pend_status;
 }
 
-exti_err_t exynos5422_exti_clear_pend(int exti_line_num)
+static exti_err_t exynos5422_exti_clear_pend(int exti_line_num)
 {
     exti_err_t err = EXTI_ERR_OK;
     volatile uint32_t *addr;

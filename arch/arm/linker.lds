@@ -13,6 +13,7 @@ SECTIONS
 
   .text : {
     *(.start);
+    *(.xstart);
     *(.text);
   }
 

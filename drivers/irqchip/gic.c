@@ -174,7 +174,7 @@ void gic_init()
 
     gic_enable_interrupts(&gic);
 
-    gic_set_priority(&gic, VIRTUALTIMER_IRQ, 255);
+    gic_set_priority(&gic, VIRTUALTIMER_IRQ, 0);
 
     gic_enable_interrupt(&gic, 
         VIRTUALTIMER_IRQ /* interrupt number */, 

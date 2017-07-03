@@ -16,6 +16,7 @@
 #include <gpio.h>
 #include <interrupt.h>
 #include <exti.h>
+#include <clocksource/gt.h>
 
 #include <stdio.h>
 
@@ -52,12 +53,17 @@ void clear_eint0()
     exti_mask_irq(0, 0x0);
 }
 
+static uint64_t start;
+
 void external_irq_handler()
 {
     if (exti_get_pend(0))
     {
         print_simple("Interrupt occured! :D\n");
+        
+        start = gt_get_cntvct();
         clear_eint0();
+        printf("clear:%u\r\n", (unsigned int)(gt_get_cntvct() - start));
     }
 }   
 

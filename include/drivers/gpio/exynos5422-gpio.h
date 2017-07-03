@@ -9,7 +9,7 @@
  *
  */
 #ifndef _EXYNOS5422_GPIO_H
-#define _EXYNOS5452_GPIO_H
+#define _EXYNOS5422_GPIO_H
 
 #include <gpio.h>
 

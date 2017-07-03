@@ -52,7 +52,7 @@
     licensing and training services.
 */
 
-	.text
+	.section ".start"
 	.arm
 
 	.set SYS_MODE,	0x1f
