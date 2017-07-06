@@ -64,16 +64,6 @@ void memory_set_device(uint32_t phy_addr)
     printf("entry_address: %x\n", (unsigned int)entry_address);
     printf("phy_to_virt_offset: %x\n", (unsigned int)phy_to_virt_offset);
 
-    uint32_t *kazaljka = &_page_dir;
-    kazaljka[2376] = entry;
-    if ((uint32_t)&kazaljka[2376] == entry_address)
-    {
-        printf("NISAM LUD!\n");
-    } else
-    {
-        printf("LUD SAM!\n");
-    }
-    printf("kazaljka[2376] = %x\n", (unsigned int)&kazaljka[2376]);
 
     *((uint32_t *)entry_address) = entry; 
 
