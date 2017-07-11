@@ -30,21 +30,28 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include <mini-os/os.h>
-#include <mini-os/lib.h>
-#include <mini-os/xmalloc.h>
+//#include <mini-os/os.h>
+//#include <mini-os/lib.h>
+#include <xmalloc.h>
 #include <errno.h>
 #include <xen/grant_table.h>
 #include <inttypes.h>
-#include <mini-os/gntmap.h>
+#include <xen/gntmap.h>
+#include <types.h>
+#include <stdio.h>
+#include <string.h>
+#include <xen/hypercall.h>
 
 //#define GNTMAP_DEBUG
 #ifdef GNTMAP_DEBUG
 #define DEBUG(_f, _a...) \
-    printk("MINI_OS(gntmap.c:%d): %s" _f "\n", __LINE__, __func__, ## _a)
+    printf("gnt(gntmap.c:%d): %s" _f "\n", __LINE__, __func__, ## _a)
 #else
 #define DEBUG(_f, _a...)    ((void)0)
 #endif
+
+
+#define PAGE_SIZE 4096
 
 
 #define DEFAULT_MAX_GRANTS 128
@@ -123,7 +130,7 @@ _gntmap_map_grant_ref(struct gntmap_entry *entry,
 
     rc = HYPERVISOR_grant_table_op(GNTTABOP_map_grant_ref, &op, 1);
     if (rc != 0 || op.status != GNTST_okay) {
-        printk("GNTTABOP_map_grant_ref failed: "
+        printf("GNTTABOP_map_grant_ref failed: "
                "returned %d, status %" PRId16 "\n",
                rc, op.status);
         return rc != 0 ? rc : op.status;
@@ -146,7 +153,7 @@ _gntmap_unmap_grant_ref(struct gntmap_entry *entry)
 
     rc = HYPERVISOR_grant_table_op(GNTTABOP_unmap_grant_ref, &op, 1);
     if (rc != 0 || op.status != GNTST_okay) {
-        printk("GNTTABOP_unmap_grant_ref failed: "
+        printf("GNTTABOP_unmap_grant_ref failed: "
                "returned %d, status %" PRId16 "\n",
                rc, op.status);
         return rc != 0 ? rc : op.status;
@@ -168,7 +175,7 @@ gntmap_munmap(struct gntmap *map, unsigned long start_address, int count)
     for (i = 0; i < count; i++) {
         ent = gntmap_find_entry(map, start_address + PAGE_SIZE * i);
         if (ent == NULL) {
-            printk("gntmap: tried to munmap unknown page\n");
+            printf("gntmap: tried to munmap unknown page\n");
             return -EINVAL;
         }
 
@@ -201,7 +208,7 @@ gntmap_map_grant_refs(struct gntmap *map,
 
     (void) gntmap_set_max_grants(map, DEFAULT_MAX_GRANTS);
 
-    addr = allocate_ondemand((unsigned long) count, 1);
+    addr = 0; //allocate_ondemand((unsigned long) count, 1);
     if (addr == 0)
         return NULL;
 

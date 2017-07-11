@@ -11,7 +11,9 @@
 all:
 	+$(MAKE) -C FreeRTOS
 	+$(MAKE) -C utils
+	+$(MAKE) -C xen
 
 clean:
 	+$(MAKE) -C FreeRTOS clean
 	+$(MAKE) -C utils clean
+	+$(MAKE) -C xen clean
