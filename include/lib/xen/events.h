@@ -19,8 +19,9 @@
 #ifndef _EVENTS_H_
 #define _EVENTS_H_
 
-#include<mini-os/traps.h>
+#include<arm/traps.h>
 #include<xen/event_channel.h>
+#include<xen/hypercall.h>
 
 typedef void (*evtchn_handler_t)(evtchn_port_t, struct pt_regs *, void *);
 

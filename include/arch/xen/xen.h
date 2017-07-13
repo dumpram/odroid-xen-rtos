@@ -688,9 +688,9 @@ struct vcpu_info {
     struct arch_vcpu_info arch;
     struct vcpu_time_info time;
 }; /* 64 bytes (x86) */
-#ifndef __XEN__
+//#ifndef __XEN__
 typedef struct vcpu_info vcpu_info_t;
-#endif
+//#endif
 
 /*
  * `incontents 200 startofday_shared Start-of-day shared data structure
@@ -755,9 +755,9 @@ struct shared_info {
     struct arch_shared_info arch;
 
 };
-#ifndef __XEN__
+//#ifndef __XEN__
 typedef struct shared_info shared_info_t;
-#endif
+//#endif
 
 /*
  * `incontents 200 startofday Start-of-day memory layout

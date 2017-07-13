@@ -106,3 +106,4 @@ _hypercall2(nmi_op);
 _hypercall1(sysctl);
 _hypercall1(domctl);
 _hypercall2(hvm_op);
+_hypercall2(xsm_op)

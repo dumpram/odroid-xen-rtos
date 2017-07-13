@@ -19,10 +19,20 @@
 #include <memory.h>
 #include <exti.h>
 
+// FIX me: this can be in separate layer...
+#include <xen/xen.h>
+
 extern uint32_t ulICCIAR;
 extern uint32_t ulICCEOIR;
 extern uint32_t ulICCPMR;
 extern struct gic gic;
+
+/*
+ * Shared page for communicating with the hypervisor.
+ * Events flags go here, for example.
+ */
+shared_info_t *HYPERVISOR_shared_info;
+
 
 void free_rtos_init()
 {

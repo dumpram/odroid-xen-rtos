@@ -67,7 +67,7 @@ gntmap_entry_used(struct gntmap_entry *entry)
     return entry->host_addr != 0;
 }
 
-static struct gntmap_entry*
+struct gntmap_entry*
 gntmap_find_free_entry(struct gntmap *map)
 {
     int i;
@@ -111,8 +111,8 @@ gntmap_set_max_grants(struct gntmap *map, int count)
     return 0;
 }
 
-static int
-_gntmap_map_grant_ref(struct gntmap_entry *entry, 
+int
+gntmap_map_grant_ref(struct gntmap_entry *entry, 
                       unsigned long host_addr,
                       uint32_t domid,
                       uint32_t ref,
@@ -215,7 +215,7 @@ gntmap_map_grant_refs(struct gntmap *map,
     for (i = 0; i < count; i++) {
         ent = gntmap_find_free_entry(map);
         if (ent == NULL ||
-            _gntmap_map_grant_ref(ent,
+            gntmap_map_grant_ref(ent,
                                   addr + PAGE_SIZE * i,
                                   domids[i * domids_stride],
                                   refs[i],

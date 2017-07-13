@@ -25,6 +25,15 @@ gntmap_map_grant_refs(struct gntmap *map,
                       int domids_stride,
                       uint32_t *refs,
                       int writable);
+int
+gntmap_map_grant_ref(struct gntmap_entry *entry, 
+                      unsigned long host_addr,
+                      uint32_t domid,
+                      uint32_t ref,
+                      int writable);
+
+struct gntmap_entry*
+gntmap_find_free_entry(struct gntmap *map);
 
 void
 gntmap_init(struct gntmap *map);

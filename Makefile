@@ -15,7 +15,7 @@ export PROJECT_ROOT
 SUBMODULES = $(PROJECT_ROOT)/api $(PROJECT_ROOT)/arch $(PROJECT_ROOT)/drivers \
 			 $(PROJECT_ROOT)/lib
 
-APP = 08_FreeRTOS_IRQCheck_App
+APP = 09_GrantMapTest_App
 
 all: export
 

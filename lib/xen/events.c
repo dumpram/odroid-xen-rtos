@@ -16,12 +16,14 @@
  ****************************************************************************
  */
 
-#include <mini-os/os.h>
-#include <mini-os/mm.h>
-#include <mini-os/hypervisor.h>
-#include <mini-os/events.h>
-#include <mini-os/lib.h>
+#include <os.h>
+//#include <mini-os/mm.h>
+#include <xen/hypervisor.h>
+#include <xen/events.h>
+//#include <mini-os/lib.h>
 #include <xen/xsm/flask_op.h>
+#include <stdio.h>
+#include <xen/xen.h>
 
 #define NR_EVS 1024
 
@@ -37,6 +39,33 @@ void default_handler(evtchn_port_t port, struct pt_regs *regs, void *data);
 
 static unsigned long bound_ports[NR_EVS/(8*sizeof(unsigned long))];
 
+static void virq_debug(evtchn_port_t port, struct pt_regs *regs, void *params)
+{
+    printf("Received a virq_debug event\n");
+}
+
+evtchn_port_t debug_port = -1;
+void arch_init_events(void)
+{
+    debug_port = bind_virq(VIRQ_DEBUG, (evtchn_handler_t)virq_debug, 0);
+    if(debug_port == -1)
+        BUG();
+    unmask_evtchn(debug_port);
+}
+
+void arch_unbind_ports(void)
+{
+    if(debug_port != -1)
+    {
+        mask_evtchn(debug_port);
+        unbind_evtchn(debug_port);
+    }
+}
+
+void arch_fini_events(void)
+{
+}
+
 void unbind_all_ports(void)
 {
     int i;
@@ -46,12 +75,12 @@ void unbind_all_ports(void)
 
     for ( i = 0; i < NR_EVS; i++ )
     {
-        if ( i == console_evtchn || i == xenbus_evtchn )
-            continue;
+        // if ( i == console_evtchn || i == xenbus_evtchn )
+        //     continue;
 
         if ( test_and_clear_bit(i, bound_ports) )
         {
-            printf("port %d still bound!\n", i);
+            printf("port %u still bound!\n", i);
 	    unbind_evtchn(i);
         }
     }
@@ -70,7 +99,8 @@ int do_event(evtchn_port_t port, struct pt_regs *regs)
 
     if ( port >= NR_EVS )
     {
-        printf("WARN: do_event(): Port number too large: %d\n", port);
+        printf("WARN: do_event(): Port number too large: %u\n", 
+            (unsigned int)port);
         return 1;
     }
 
@@ -88,8 +118,8 @@ evtchn_port_t bind_evtchn(evtchn_port_t port, evtchn_handler_t handler,
 						  void *data)
 {
  	if ( ev_actions[port].handler != default_handler )
-        printf("WARN: Handler for port %d already registered, replacing\n",
-               port);
+        printf("WARN: Handler for port %u already registered, replacing\n",
+               (unsigned int)port);
 
 	ev_actions[port].data = data;
 	wmb();
@@ -105,7 +135,8 @@ void unbind_evtchn(evtchn_port_t port )
     int rc;
 
     if ( ev_actions[port].handler == default_handler )
-        printf("WARN: No handler for port %d when unbinding\n", port);
+        printf("WARN: No handler for port %u when unbinding\n", 
+            (unsigned int)port);
     mask_evtchn(port);
     clear_evtchn(port);
 
@@ -117,7 +148,8 @@ void unbind_evtchn(evtchn_port_t port )
     close.port = port;
     rc = HYPERVISOR_event_channel_op(EVTCHNOP_close, &close);
     if ( rc )
-        printf("WARN: close_port %d failed rc=%d. ignored\n", port, rc);
+        printf("WARN: close_port %u failed rc=%d. ignored\n", 
+            (unsigned int)port, rc);
 }
 
 evtchn_port_t bind_virq(uint32_t virq, evtchn_handler_t handler, void *data)
@@ -132,7 +164,8 @@ evtchn_port_t bind_virq(uint32_t virq, evtchn_handler_t handler, void *data)
 	rc = HYPERVISOR_event_channel_op(EVTCHNOP_bind_virq, &op);
 	if (rc != 0)
 	{
-		printf("Failed to bind virtual IRQ %d with rc=%d\n", virq, rc);
+		printf("Failed to bind virtual IRQ %u with rc=%d\n", 
+            (unsigned int)virq, rc);
 		return -1;
     }
     bind_evtchn(op.port, handler, data);
@@ -151,7 +184,8 @@ evtchn_port_t bind_pirq(uint32_t pirq, int will_share,
 
 	if ( (rc = HYPERVISOR_event_channel_op(EVTCHNOP_bind_pirq, &op)) != 0 )
 	{
-		printf("Failed to bind physical IRQ %d with rc=%d\n", pirq, rc);
+		printf("Failed to bind physical IRQ %u with rc=%d\n", 
+            (unsigned int)pirq, rc);
 		return -1;
 	}
 	bind_evtchn(op.port, handler, data);
@@ -185,7 +219,7 @@ void fini_events(void)
 
 void default_handler(evtchn_port_t port, struct pt_regs *regs, void *ignore)
 {
-    printf("[Port %d] - event received\n", port);
+    printf("[Port %u] - event received\n", (unsigned int)port);
 }
 
 /* Create a port available to the pal for exchanging notifications.
