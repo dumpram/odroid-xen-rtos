@@ -10,7 +10,8 @@
  */
 #include <clocksource/gt.h>
 
+// return ns
 uint64_t gettimeofday()
 {
-    return gt_get_cntvct();
+    return gt_get_cntvct() * 41;
 }

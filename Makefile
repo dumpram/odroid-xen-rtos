@@ -15,7 +15,7 @@ export PROJECT_ROOT
 SUBMODULES = $(PROJECT_ROOT)/api $(PROJECT_ROOT)/arch $(PROJECT_ROOT)/drivers \
 			 $(PROJECT_ROOT)/lib
 
-APP = 09_GrantMapTest_App
+APP = 05_GPIO_InterruptLatency_App
 
 all: export
 

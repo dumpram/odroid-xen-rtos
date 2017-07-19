@@ -44,7 +44,7 @@ INCLUDE = -I $(PROJECT_ROOT)/include/api \
 CFLAGS += $(INCLUDE)
 
 # Platform defines
-CFLAGS += -D __XEN__
+CFLAGS += -D __XEN__ -O3
 
 # Assembler flags
 AFLAGS += -x assembler-with-cpp

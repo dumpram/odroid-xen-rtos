@@ -14,6 +14,9 @@
 #include <utils/print.h>
 #include <types.h>
 #include <memory.h>
+#include <time.h>
+#include <stdio.h>
+
 
 static void (*handler[INTERRUPT_IRQ_NUM])();
 
@@ -107,10 +110,46 @@ interrupt_err_t interrupt_set_priority(int irq_num, int priority)
     return err;
 }
 
+// static uint64_t profiling[20000] = {0};
+// static int i = 0;
+
 void irq_handler(int curr_active_irq) 
 {
+   // uint64_t start = NOW();
+
     if (handler[curr_active_irq] != NULL)
     {
-        handler[curr_active_irq]();
+       handler[curr_active_irq]();
     }
+
+    //handler[64]();
+
+    // if (i < 20000)
+    // {
+    //     profiling[i++] = NOW() - start;
+    // } 
+    // else if (i == 20000) 
+    // {
+    //     uint64_t max = profiling[0];
+    //     uint64_t min = profiling[0];
+    //     uint64_t sum = 0;
+    //     for (i = 0 ; i < 20000; i++)
+    //     {
+    //         sum += profiling[i];
+    //         if (profiling[i] > max)
+    //         {
+    //             max = profiling[i];
+    //         }
+
+    //         if (profiling[i] < min)
+    //         {
+    //             min = profiling[i];
+    //         }
+    //     }
+    //     printf("XEN_LAT (max - avg - min): %u - %u - %u ns\n", 
+    //         (unsigned int) max, 
+    //         (unsigned int) sum / 20000,
+    //         (unsigned int) min);
+    //     i = 0;
+    // }   
 }

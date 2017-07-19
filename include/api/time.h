@@ -11,6 +11,7 @@
 #ifndef _TIME_H
 #define _TIME_H
 
+#define NOW() gettimeofday()
 
 uint64_t gettimeofday();
 
