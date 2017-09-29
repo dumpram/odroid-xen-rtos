@@ -13,11 +13,21 @@
 #include <utils/print.h>
 #include <gpio/exynos5422-gpio.h>
 #include <exti/exynos5422-exti.h>
+#include <console/exynos5422-console.h>
+#include <console/xen-console.h>
 
 #include <gpio.h>
 #include <interrupt.h>
 #include <memory.h>
 #include <exti.h>
+#include <console.h>
+
+console_params_t default_console_params = {
+    .baud = 115200,
+    .data_bits = 8,
+    .parity = CONSOLE_PARITY_NONE,
+    .stop_bits = 1
+};
 
 // FIX me: this can be in separate layer...
 #include <xen/xen.h>
@@ -45,6 +55,7 @@ void free_rtos_init()
     print_register("ulICCPMR",  ulICCPMR);
 }
 
+
 void arch_early_init(uint32_t offset)
 {
     print_simple("Arch early init!\n");
@@ -54,8 +65,15 @@ void arch_early_init(uint32_t offset)
     memory_api_init(offset);
     interrupt_api_init(&gic_driver);
     gpio_api_init(&exynos5422_gpio_driver);
-    exti_api_init(&exynos5422_exti_driver); // implement exynos5422 exti drivers
+    exti_api_init(&exynos5422_exti_driver);
 
+#if BARE_METAL == 1
+    console_api_init(&exynos5422_console_driver, &default_console_params);
+#elif XEN_EMERGENCY_CONSOLE == 1
+    console_api_init(&xen_emerg_console, &default_console_params);
+#else 
+    console_api_init(&xen_console, &default_console_params);
+#endif
     // FIX ME: this shouldn't be here, create os wrapper
     free_rtos_init();
 }
