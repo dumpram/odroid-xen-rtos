@@ -23,7 +23,7 @@ setup:
     ldr r3, =_start         @ Gets desired (virtual) address
     sub r9, r1, r3          @ R9 = virtual to physical offset
 
-    ldr r7, =_page_dir @ Virtual address of page table
+    ldr r7, =_page_dir      @ Virtual address of page table
     add r1, r7, r9          @ Physical address of page table
 
     @ Sharable, Inner/Outer Write-Back Write-Allocate Cacheable 
@@ -97,12 +97,6 @@ stage2:
 
     cpsie  i                              @ Enable interrupts
 
-    @ Greeting message from boot.s
-    mov r0, #0
-    mov r1, #45
-    ldr r2, =msg
-    bl HYPERVISOR_console_io
-
     ldr lr,=__main
     mov r0, r9                  @ Pass physical to virtual offset to arch_init
     b arch_early_init
@@ -113,7 +107,3 @@ __main:
 
 __exit:
     b   .
-
-.align 4
-msg:
-    .asciz ">> Booting bare metal Xen application... <<\n"

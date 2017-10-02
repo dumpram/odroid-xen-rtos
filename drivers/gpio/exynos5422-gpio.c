@@ -20,6 +20,7 @@
 typedef enum _gpio_port_t {
     GPIO_PORT_A0,
     GPIO_PORT_A2,
+    GPIO_PORT_B2,
     GPIO_PORT_B3,
     GPIO_PORT_X1,
     GPIO_PORT_X2
@@ -47,6 +48,7 @@ static gpio_port_t pinnum_to_port(int pinnum)
     // portmapping of ODROID XU3 header
     switch(pinnum)
     {
+        case 0  : port = GPIO_PORT_B2; break; // onboard led
         case 4  : port = GPIO_PORT_A0; break;
         case 5  : port = GPIO_PORT_A0; break;
         case 6  : port = GPIO_PORT_A0; break;
@@ -84,6 +86,7 @@ static int pinnum_to_pin(int pinnum)
     // pinmapping of ODROID-XU3 header
     switch(pinnum)
     {
+        case 0  : pin = 2; break; // onboard led
         case 4  : pin = 2; break;
         case 5  : pin = 3; break;
         case 6  : pin = 0; break;
@@ -145,6 +148,11 @@ static void exynos5422_gpio_init(int pinnum, gpio_mode_t mode)
             ctrl_offset = GPA2_CTRL_OFFS;
         break;
 
+        case GPIO_PORT_B2 : 
+            base_address = p2v_translate(GPB2_BASE_ADDR);
+            ctrl_offset = GPB2_CTRL_OFFS;
+        break;
+
         case GPIO_PORT_X1 :
             base_address = p2v_translate(GPX1_BASE_ADDR);
             ctrl_offset = GPX1_CTRL_OFFS;
@@ -197,6 +205,11 @@ static void exynos5422_gpio_set_direction(int pinnum, gpio_mode_t mode)
             ctrl_offset = GPA2_CTRL_OFFS; 
         break;
 
+        case GPIO_PORT_B2 : 
+            base_address = p2v_translate(GPB2_BASE_ADDR);
+            ctrl_offset = GPB2_CTRL_OFFS;
+        break;
+
         case GPIO_PORT_X1 :
             base_address = p2v_translate(GPX1_BASE_ADDR);
             ctrl_offset = GPX1_CTRL_OFFS;
@@ -229,6 +242,11 @@ static void exynos5422_gpio_set_value(int pinnum, int value)
         case GPIO_PORT_A2 : 
             base_address = p2v_translate(GPA2_BASE_ADDR);
             data_offset = GPA2_DATA_OFFS; 
+        break;
+
+        case GPIO_PORT_B2 : 
+            base_address = p2v_translate(GPB2_BASE_ADDR);
+            data_offset = GPB2_DATA_OFFS;
         break;
 
         case GPIO_PORT_X1 :
@@ -267,6 +285,11 @@ static int exynos5422_gpio_get_value(int pinnum)
         case GPIO_PORT_A2 : 
             base_address = p2v_translate(GPA2_BASE_ADDR);
             data_offset = GPA2_DATA_OFFS; 
+        break;
+
+        case GPIO_PORT_B2 : 
+            base_address = p2v_translate(GPB2_BASE_ADDR);
+            data_offset = GPB2_DATA_OFFS;
         break;
 
         case GPIO_PORT_X1 :

@@ -31,7 +31,7 @@ static console_err_t exynos5422_console_init(console_params_t *params)
 
     //unsigned int divisor;
     uint32_t ulcon = 0;
-    uint32_t uart = params->addr;
+    uint32_t uart = (uint32_t) p2v_translate(params->addr) ;
 
     /* reset, TX/RX disables */
     exynos5422_write(uart, UCON, 0);
@@ -118,7 +118,8 @@ static console_err_t exynos5422_console_init(console_params_t *params)
 
 static int exynos5422_console_putc(console_params_t *params, char c)
 {
-   exynos5422_write(params->addr, UTXH, (uint32_t)(unsigned char)c);
+   exynos5422_write(p2v_translate(params->addr), UTXH, 
+    (uint32_t)(unsigned char)c);
 
    return c;
 }

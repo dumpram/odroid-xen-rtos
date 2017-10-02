@@ -45,6 +45,7 @@ CFLAGS += $(INCLUDE)
 
 # Platform defines
 CFLAGS += -D __XEN__ -O3
+CFLAGS += -D __BARE_MACHINE__
 
 # Assembler flags
 AFLAGS += -x assembler-with-cpp

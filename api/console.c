@@ -30,7 +30,7 @@ console_err_t console_api_init(console_driver_t *driver, console_params_t
     }
     if (!err && console_drv->console_drv_init != NULL)
     {
-        err = console_drv->console_drv_init(console_par);
+        //err = console_drv->console_drv_init(console_par);
     }
     return err;
 }

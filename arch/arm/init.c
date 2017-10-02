@@ -22,6 +22,13 @@
 #include <exti.h>
 #include <console.h>
 
+
+#ifdef __BARE_MACHINE__
+#define EXYNOS5422_UART_ADDR 0x12C00000
+#define EXYNOS5422_UART_SIZE 0x100
+#endif 
+
+
 console_params_t default_console_params = {
     .baud = 115200,
     .data_bits = 8,
@@ -36,6 +43,7 @@ extern uint32_t ulICCIAR;
 extern uint32_t ulICCEOIR;
 extern uint32_t ulICCPMR;
 extern struct gic gic;
+
 
 /*
  * Shared page for communicating with the hypervisor.
@@ -67,7 +75,8 @@ void arch_early_init(uint32_t offset)
     gpio_api_init(&exynos5422_gpio_driver);
     exti_api_init(&exynos5422_exti_driver);
 
-#if BARE_METAL == 1
+#ifdef __BARE_MACHINE__
+    default_console_params.addr = EXYNOS5422_UART_ADDR;
     console_api_init(&exynos5422_console_driver, &default_console_params);
 #elif XEN_EMERGENCY_CONSOLE == 1
     console_api_init(&xen_emerg_console, &default_console_params);

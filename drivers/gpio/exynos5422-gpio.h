@@ -11,14 +11,19 @@
 #ifndef _EXYNOS_5422_GPIO_H
 #define _EXYNOS_5422_GPIO_H
 
-
 #define GPA2_BASE_ADDR  ((unsigned int)  0x14010000)
+#define GPB2_BASE_ADDR  ((unsigned int)  0x14010000)
+
 #define GPX1_BASE_ADDR  ((unsigned int)  0x13400000)
 #define GPX2_BASE_ADDR  ((unsigned int)  0x13400000)
 
 #define GPA2_CTRL_OFFS 0x0040
 #define GPA2_DATA_OFFS 0x0044
 #define GPA2_PUPD_OFFS 0x0048
+
+#define GPB2_CTRL_OFFS 0x00A0
+#define GPB2_DATA_OFFS 0x00A4
+#define GPB2_PUPD_OFFS 0x00A8
 
 #define GPX1_CTRL_OFFS 0x0C20
 #define GPX1_DATA_OFFS 0x0C24
