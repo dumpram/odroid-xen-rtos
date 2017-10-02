@@ -23,7 +23,7 @@
 #include <memory.h>
 
 // pin numbers correspond to ODROID-XU3 header
-#define GPIO_PIN_HEARTBEAT 24
+#define GPIO_PIN_HEARTBEAT 0
 #define GPIO_PIN_OUT       10
 #define GPIO_PIN_IN        26
 
@@ -113,7 +113,7 @@ int main()
     gpio_set_value(0, 0);
 
 
-    // printf("Console working, main started!\n");
+    printf("Console working, main started!\n");
 
     // print_simple("Entered main!\n");
 
@@ -131,6 +131,6 @@ int main()
 
     while(1)
     {
-        gpio_set_value(0, 0);
+        
     }
 }

@@ -16,8 +16,8 @@
 #include <types.h>
 
 // Base addresses
-#define GICC_BASE GUEST_GICC_BASE
-#define GICD_BASE GUEST_GICD_BASE
+#define GICC_BASE 0x10482000
+#define GICD_BASE 0x10481000
 
 // Virtual timer IRQ
 #define VIRTUALTIMER_IRQ 27

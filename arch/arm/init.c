@@ -71,7 +71,7 @@ void arch_early_init(uint32_t offset)
 
     // initialize memory first with physical to virtual offset 
     memory_api_init(offset);
-    interrupt_api_init(&gic_driver);
+    // interrupt_api_init(&gic_driver);
     gpio_api_init(&exynos5422_gpio_driver);
     exti_api_init(&exynos5422_exti_driver);
 

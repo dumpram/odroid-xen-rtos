@@ -7,9 +7,7 @@ HEAP_SIZE = 16K;
 
 SECTIONS
 {
-
-  _page_dir      = 0x404000;  /* 16 KB translation table */
-  .    = 0x408000;
+  .    = 0x40008000;
 
   .text : {
     *(.start);
