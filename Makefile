@@ -17,7 +17,7 @@ SUBMODULES = $(PROJECT_ROOT)/api $(PROJECT_ROOT)/arch $(PROJECT_ROOT)/drivers \
 
 APP = 05_GPIO_InterruptLatency_App
 
-all: export
+all: apps
 
 submodules:
 	$(foreach submodule,$(SUBMODULES),$(MAKE) -C $(submodule) && ) true

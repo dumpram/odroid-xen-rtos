@@ -24,7 +24,6 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
  * DEALINGS IN THE SOFTWARE.
  */
-
 #include <os.h>
 #include <memory.h>
 //#include <mini-os/lib.h>
@@ -35,56 +34,44 @@
 #include <xen/hvm/hvm_op.h>
 #include <xen/xen.h>
 #include <stdio.h>
-
 #define active_evtchns(cpu,sh,idx)              \
     ((sh)->evtchn_pending[idx] &                \
      ~(sh)->evtchn_mask[idx])
-
 int in_callback;
-
 #ifndef CONFIG_PARAVIRT
 shared_info_t shared_info;
-
 int hvm_get_parameter(int idx, uint64_t *value)
 {
     struct xen_hvm_param xhv;
     int ret;
-
     xhv.domid = DOMID_SELF;
     xhv.index = idx;
     ret = HYPERVISOR_hvm_op(HVMOP_get_param, &xhv);
     if ( ret < 0 )
         //BUG();
-
     *value = xhv.value;
     return ret;
 }
-
 int hvm_set_parameter(int idx, uint64_t value)
 {
     struct xen_hvm_param xhv;
-
     xhv.domid = DOMID_SELF;
     xhv.index = idx;
     xhv.value = value;
     return HYPERVISOR_hvm_op(HVMOP_set_param, &xhv);
 }
-
 shared_info_t *map_shared_info(void *p)
 {
     struct xen_add_to_physmap xatp;
-
     xatp.domid = DOMID_SELF;
     xatp.idx = 0;
     xatp.space = XENMAPSPACE_shared_info;
     xatp.gpfn = (unsigned long)v2p_translate(&shared_info);
     if ( HYPERVISOR_memory_op(XENMEM_add_to_physmap, &xatp) != 0 )
         BUG();
-
     return &shared_info;
 }
 #endif
-
 void do_hypervisor_callback(struct pt_regs *regs)
 {
     unsigned long  l1, l2, l1i, l2i;
@@ -92,9 +79,7 @@ void do_hypervisor_callback(struct pt_regs *regs)
     int            cpu = 0;
     shared_info_t *s = HYPERVISOR_shared_info;
     vcpu_info_t   *vcpu_info = &s->vcpu_info[cpu];
-
     in_callback = 1;
-   
     vcpu_info->evtchn_upcall_pending = 0;
     /* NB x86. No need for a barrier here -- XCHG is a barrier on x86. */
 #if !defined(__i386__) && !defined(__x86_64__)
@@ -106,20 +91,16 @@ void do_hypervisor_callback(struct pt_regs *regs)
     {
         l1i = __ffs(l1);
         l1 &= ~(1UL << l1i);
-        
         while ( (l2 = active_evtchns(cpu, s, l1i)) != 0 )
         {
             l2i = __ffs(l2);
             l2 &= ~(1UL << l2i);
-
             port = (l1i * (sizeof(unsigned long) * 8)) + l2i;
             do_event(port, regs);
         }
     }
-
     in_callback = 0;
 }
-
 void force_evtchn_callback(void)
 {
 #ifdef XEN_HAVE_PV_UPCALL_MASK
@@ -130,7 +111,6 @@ void force_evtchn_callback(void)
 #ifdef XEN_HAVE_PV_UPCALL_MASK
     save = vcpu->evtchn_upcall_mask;
 #endif
-
     while (vcpu->evtchn_upcall_pending) {
 #ifdef XEN_HAVE_PV_UPCALL_MASK
         vcpu->evtchn_upcall_mask = 1;
@@ -144,20 +124,16 @@ void force_evtchn_callback(void)
 #endif
     };
 }
-
 inline void mask_evtchn(uint32_t port)
 {
     shared_info_t *s = HYPERVISOR_shared_info;
     synch_set_bit(port, &s->evtchn_mask[0]);
 }
-
 inline void unmask_evtchn(uint32_t port)
 {
     shared_info_t *s = HYPERVISOR_shared_info;
     vcpu_info_t *vcpu_info = &s->vcpu_info[smp_processor_id()];
-
     synch_clear_bit(port, &s->evtchn_mask[0]);
-
     /*
      * The following is basically the equivalent of 'hw_resend_irq'. Just like
      * a real IO-APIC we 'lose the interrupt edge' if the channel is masked.
@@ -173,7 +149,6 @@ inline void unmask_evtchn(uint32_t port)
             force_evtchn_callback();
     }
 }
-
 inline void clear_evtchn(uint32_t port)
 {
     shared_info_t *s = HYPERVISOR_shared_info;

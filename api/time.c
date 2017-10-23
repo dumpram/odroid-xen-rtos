@@ -9,7 +9,6 @@
  *
  */
 #include <clocksource/gt.h>
-
 // return ns
 uint64_t gettimeofday()
 {

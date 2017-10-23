@@ -34,7 +34,7 @@ gpio_err_t gpio_api_init(gpio_driver_t *drv);
 void gpio_init(int pin, gpio_mode_t mode);
 void gpio_set_value(int pin, int direction);
 void gpio_set_direction(int pin, gpio_mode_t mode);
-int gpio_get_value(int pin);
+int gpio_get_value(int pin)
 
 
 #endif /*----------  End of header file gpio.h  ----------*/

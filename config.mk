@@ -9,8 +9,8 @@
 ################################################################################
 
 # Toolchain
-TOOLCHAIN_ROOT = /home/dumpram/arm-compilers/gcc-arm-none-eabi-5_4-2016q3
-PREFIX = ~/arm-compilers/gcc-arm-none-eabi-5_4-2016q3/bin/arm-none-eabi-
+TOOLCHAIN_ROOT = 
+PREFIX = arm-none-eabi-
 
 CC = $(PREFIX)gcc
 AS = $(PREFIX)gcc
@@ -18,8 +18,8 @@ LD = $(PREFIX)gcc
 AR = $(PREFIX)ar
 BIN = $(PREFIX)objcopy
 
-LIB_C = $(TOOLCHAIN_ROOT)/arm-none-eabi/lib
-LIB_GCC = $(TOOLCHAIN_ROOT)/lib/gcc/arm-none-eabi/5.4.1
+LIB_C = 
+LIB_GCC = 
 
 # C source flags
 CFLAGS = -Wall \

@@ -9,28 +9,21 @@
  *
  */
 #define INTERRUPT_IRQ_NUM 1024
-
 #include <interrupt.h>
 #include <utils/print.h>
 #include <types.h>
 #include <memory.h>
 #include <time.h>
 #include <stdio.h>
-
-
 static void (*handler[INTERRUPT_IRQ_NUM])();
-
 static irq_chip_t *irq_chip;
-
 interrupt_err_t interrupt_api_init(irq_chip_t *chip)
 {
     interrupt_err_t err = INTERRUPT_ERR_OK;
-
     if (chip == NULL)
     {
         err = INTERRUPT_ERR_BAD;
     }
-
     if (!err)
     {
         irq_chip = chip;
@@ -39,48 +32,37 @@ interrupt_err_t interrupt_api_init(irq_chip_t *chip)
             irq_chip->init();    
         }
     }
-
     return err;
 }
-
 interrupt_err_t interrupt_disable_irq(int irq_num, int flags)
 {
     interrupt_err_t err = INTERRUPT_ERR_OK;
-
     if (irq_chip == NULL || irq_chip->disable_irq == NULL)
     {
         err = INTERRUPT_ERR_BAD;
     }
-
     if (!err)
     {
         err = irq_chip->disable_irq(irq_num, flags);
     }
-
     return err; 
 }
-
 interrupt_err_t interrupt_enable_irq(int irq_num, int flags)
 {
     interrupt_err_t err = INTERRUPT_ERR_OK;
-
     if (irq_chip == NULL || irq_chip->disable_irq == NULL)
     {
         err = INTERRUPT_ERR_BAD;
     }
-
     if (!err)
     {
         err = irq_chip->enable_irq(irq_num, flags);
     }
-
     return err;
 }
-
 interrupt_err_t interrupt_register_handler(int irq_num, void (*hdlr)(void))
 {
     interrupt_err_t err = INTERRUPT_ERR_OK;
-
     if (!(irq_num < 0 || irq_num >= INTERRUPT_IRQ_NUM))
     {
         handler[irq_num] = hdlr;
@@ -89,41 +71,31 @@ interrupt_err_t interrupt_register_handler(int irq_num, void (*hdlr)(void))
     {
         err = INTERRUPT_ERR_BAD;
     }
-
     return err;
 }
-
 interrupt_err_t interrupt_set_priority(int irq_num, int priority)
 {
     interrupt_err_t err = INTERRUPT_ERR_OK;
-
     if (irq_chip == NULL || irq_chip->set_priority == NULL)
     {
         err = INTERRUPT_ERR_BAD;
     }
-
     if (!err)
     {
         err = irq_chip->set_priority(irq_num, priority);
     }
-
     return err;
 }
-
 // static uint64_t profiling[20000] = {0};
 // static int i = 0;
-
 void irq_handler(int curr_active_irq) 
 {
    // uint64_t start = NOW();
-
     if (handler[curr_active_irq] != NULL)
     {
        handler[curr_active_irq]();
     }
-
     //handler[64]();
-
     // if (i < 20000)
     // {
     //     profiling[i++] = NOW() - start;
@@ -140,7 +112,6 @@ void irq_handler(int curr_active_irq)
     //         {
     //             max = profiling[i];
     //         }
-
     //         if (profiling[i] < min)
     //         {
     //             min = profiling[i];
